@@ -1,5 +1,5 @@
 /*******************************************************
- * todo-vmc implementation based on ALPS doc 
+ * todo-mvc implementation based on ALPS doc
  * home connector (server)
  * May 2015
  * Mike Amundsen (@mamund)
@@ -22,11 +22,31 @@ function main(req, res, parts, respond) {
 }
 
 function sendHome(req, res, respond) {
-  var doc, coll;
+  var doc, coll, tran, root;
 
+  root = '//'+req.headers.host;
+  
   coll = [];
-  coll.splice(coll.length, 0, transitions("listAll"));
+  
+  tran  = transitions("listAll");
+  tran.href = root + "/todo/";
+  tran.rel = "collection";
+  coll.splice(coll.length, 0, tran);
+  
+  tran = transitions("listActive");
+  tran.href = root + "/todo/"
+  tran.rel ="collection active";
+  coll.splice(coll.length, 0, tran);
 
+  tran = transitions("listCompleted");
+  tran.href = root + "/todo/"
+  tran.rel = "collection completed";
+  coll.splice(coll.length, 0, tran);
+  
+  tran = transitions("addForm");
+  tran.rel = "create-form";
+  coll.splice(coll.length, 0, tran);
+  
   doc = {};
   doc.actions = coll;
 

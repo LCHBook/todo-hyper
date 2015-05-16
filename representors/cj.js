@@ -1,5 +1,5 @@
 /*******************************************************
- * todo-vmc implementation based on ALPS doc 
+ * todo-vmc implementation based on ALPS doc
  * cj representor (server)
  * May 2015
  * Mike Amundsen (@mamund)
@@ -21,31 +21,96 @@ function cj(object, root) {
   rtn.collection.title = "ToDo MVC";
 
   // hacked.
-  if(object["home"] && object["home"].actions) {
-    rtn.collection.links = buildLinks(object["home"].actions, root);
-  }
+  for(var o in object) {
+    rtn.collection.links = getLinks(object[o].actions);
+    rtn.collection.items = getItems(object[o].data);
+    rtn.collection.queries = getQueries(object[o].actions);
+    rtn.collection.template = getTemplate(object[o].actions)
   
-  rtn.collection.items = [];
-  rtn.collection.queries = [];
-  rtn.collection.template = {};
-
-  if(object.error) {
-    rtn.collection.error = buildError(object.error);
+    if(object.error) {
+      rtn.collection.error = buildError(object.error);
+    }
   }
   
   return JSON.stringify(rtn, null, 2);
 }
 
-function buildLinks(obj, root) {
-  var link, rtn, i, x;;
+function getLinks(obj, root) {
+  var link, rtn, i, x;
 
   rtn = [];
-  for(i=0,x=obj.length;i<x;i++) {
-    if(obj[i].type==="safe" & obj[i].target==="list") {
-      link = {rel:"self",href:'http:'+root+'/',prompt:"All ToDos"};
-      rtn.push(link);
+  if(Array.isArray(obj)!==false) {
+    for(i=0,x=obj.length;i<x;i++) {
+      link = obj[i];
+      if(link.type==="safe" && link.target==="list") {
+        if(!link.inputs) {
+          rtn.push({
+            rel: link.rel,
+            href: link.href,
+            prompt: link.prompt
+          });
+        }
+      }
     }
   }
+  return rtn;
+}
+
+function getItems(obj) {
+  var item, data, rtn, i, x, j, y;
+  
+  rtn = [];
+  if(Array.isArray(obj)!==false) {
+    
+  }
+  return rtn;
+}
+
+function getQueries(obj) {
+  var data, d, query, q, rtn, i, x, j, y;
+  
+  rtn = [];
+  if(Array.isArray(obj)!==false) {
+    for(i=0,x=obj.length;i<x;i++) {
+      query = obj[i];
+      if(query.type==="safe" && query.inputs && Array.isArray(query.inputs)) {
+        q = {};
+        q.rel = query.rel;
+        q.href = query.href;
+        q.prompt = query.prompt||"";
+        data = [];
+        for(j=0,y=query.inputs.length;j<y;j++) {
+          d = query.inputs[j];
+          data.push({name:d.name||"input"+j,value:d.value||"",prompt:d.prompt||d.name})
+        }
+        q.data = data;
+        rtn.push(q);
+      }
+    }
+  }
+  return rtn;
+}
+
+function getTemplate(obj) {
+  var data, temp, rtn, d, i, x, j, y;
+  
+  rtn = {};
+  data = [];
+  
+  if(Array.isArray(obj)!==false) {
+    for(i=0,x=obj.length;i<x;i++) {
+      if(obj[i].name==="addForm") {
+        temp = obj[i];
+        rtn.prompt = temp.prompt;
+        rtn.rel = temp.rel;
+        for(j=0,y=temp.inputs.length;j<y;j++) {
+          d = temp.inputs[j];
+          data.push({name:d.name||"input"+j,value:d.value||"",prompt:d.prompt||d.name});
+        }
+      }
+    }
+  }
+  rtn.data = data;
   return rtn;
 }
 
