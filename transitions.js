@@ -28,7 +28,6 @@ trans.homeLink = {
   name : "homeLink",
   type : "safe",
   kind : "home",
-  key : "",
   target : "list",
   prompt : "Home"
 };
@@ -38,7 +37,6 @@ trans.listAll = {
   name : "listAll",
   type : "safe",
   kind : "todo",
-  key : "",
   target : "list",
   prompt : "All ToDo"
 };
@@ -46,7 +44,6 @@ trans.listActive = {
   name : "listActive",
   type : "safe",
   kind : "todo",
-  key : "",
   target : "list",
   prompt : "Active ToDos",
   inputs : [
@@ -57,7 +54,6 @@ trans.listCompleted = {
   name : "listCompleted",
   type : "safe",
   kind : "todo",
-  key : "",
   target : "list",
   prompt : "Completed ToDos",
   inputs : [
@@ -69,7 +65,6 @@ trans.addLink = {
   name : "addLink",
   type : "safe",
   kind : "todo",
-  key : "",
   target : "list",
   prompt : "Add ToDo"
 };
@@ -77,7 +72,6 @@ trans.addForm = {
   name : "addForm",
   type : "unsafe",
   kind : "todo",
-  key : "",
   prompt : "Add ToDo",
   inputs : [
     {name : "title", prompt : "Title"},
@@ -89,7 +83,6 @@ trans.editLink = {
   name : "todoEditLink",
   type : "safe",
   kind : "todo",
-  key : "",
   target : "item",
   prompt : "Edit ToDo"
 };
@@ -97,7 +90,6 @@ trans.editForm = {
   name : "todoAddForm",
   type : "unsafe",
   kind : "todo",
-  key : "id",
   prompt : "Edit ToDo",
   inputs : [
     {name : "id", prompt : "ID"},
@@ -110,7 +102,6 @@ trans.removeLink = {
   name : "removeLink",
   type : "safe",
   kind : "todo",
-  key : "",
   target : "item",
   prompt : "Remove ToDo"
 };
@@ -118,7 +109,6 @@ trans.removeForm = {
   name : "removeForm",
   type : "unsafe",
   kind : "todo",
-  key : "",
   prompt : "Remove ToDo",
   inputs : [
     {name : "id", prompt : "ID"}
@@ -129,7 +119,6 @@ trans.completedLink = {
   name : "completedLink",
   type : "safe",
   kind : "todo",
-  key : "completed",
   target : "item",
   prompt : "Mark Completed"
 };
@@ -137,7 +126,6 @@ trans.completedForm = {
   name : "completedForm",
   type : "unsafe",
   kind : "todo",
-  key : "",
   prompt : "Mark Completed",
   inputs : [
     {name: "id", prompt:"ID"},
@@ -149,7 +137,6 @@ trans.clearCompletedLink = {
   name : "clearCompletedLink",
   type : "safe",
   kind : "todo",
-  key : "completed",
   target : "list",
   prompt : "Clear Completed"
 };
@@ -157,7 +144,6 @@ trans.clearCompletedForm = {
   name : "clearCompletedForm",
   type : "unsafe",
   kind : "todo",
-  key : "",
   target : "list",
   prompt : "Clear Completed",
   inputs : [

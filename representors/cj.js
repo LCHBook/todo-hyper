@@ -19,7 +19,6 @@ function cj(object, root) {
   rtn.collection.version = "1.0";
   rtn.collection.href = root;
 
-  // hacked.
   for(var o in object) {
     
     rtn.collection.title = getTitle(object[o]);
