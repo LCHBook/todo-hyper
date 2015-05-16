@@ -1,5 +1,5 @@
 /*******************************************************
- * todo-vmc implementation based on ALPS doc 
+ * todo-mvc implementation based on ALPS doc
  * representation router (server)
  * May 2015
  * Mike Amundsen (@mamund)
@@ -22,7 +22,7 @@ function processDoc(object, mimeType, root) {
     mimeType = "application/vnd.collection+json";
   }
 
-  // dispatch to requested representor  
+  // dispatch to requested representor
   switch (mimeType.toLowerCase()) {
     case "application/json":
       doc = json(object, root);

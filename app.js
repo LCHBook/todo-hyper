@@ -1,5 +1,5 @@
 /*******************************************************
- * todo-vmc implementation based on ALPS doc 
+ * todo-mvc implementation based on ALPS doc
  * JSON objects implementation (server)
  * May 2015
  * Mike Amundsen (@mamund)

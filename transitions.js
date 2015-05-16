@@ -1,5 +1,5 @@
 /*******************************************************
- * todo-vmc implementation based on ALPS doc 
+ * todo-mvc implementation based on ALPS doc
  * transitions document (server)
  * May 2015
  * Mike Amundsen (@mamund)
@@ -25,8 +25,8 @@ function main(name) {
 
 // home transitions
 trans.homeLink = {
-  name : "homeLink", 
-  type : "safe", 
+  name : "homeLink",
+  type : "safe",
   kind : "home",
   key : "",
   target : "list",
@@ -35,16 +35,16 @@ trans.homeLink = {
 
 // todo transitions
 trans.listAll = {
-  name : "listAll", 
-  type : "safe", 
+  name : "listAll",
+  type : "safe",
   kind : "todo",
   key : "",
   target : "list",
   prompt : "All ToDo"
 };
 trans.listActive = {
-  name : "listActive", 
-  type : "safe", 
+  name : "listActive",
+  type : "safe",
   kind : "todo",
   key : "",
   target : "list",
@@ -54,8 +54,8 @@ trans.listActive = {
   ]
 };
 trans.listCompleted = {
-  name : "listCompleted", 
-  type : "safe", 
+  name : "listCompleted",
+  type : "safe",
   kind : "todo",
   key : "",
   target : "list",
@@ -74,7 +74,7 @@ trans.addLink = {
   prompt : "Add ToDo"
 };
 trans.addForm = {
-  name : "addForm", 
+  name : "addForm",
   type : "unsafe",
   kind : "todo",
   key : "",
@@ -94,7 +94,7 @@ trans.editLink = {
   prompt : "Edit ToDo"
 };
 trans.editForm = {
-  name : "todoAddForm", 
+  name : "todoAddForm",
   type : "unsafe",
   kind : "todo",
   key : "id",
@@ -115,7 +115,7 @@ trans.removeLink = {
   prompt : "Remove ToDo"
 };
 trans.removeForm = {
-  name : "removeForm", 
+  name : "removeForm",
   type : "unsafe",
   kind : "todo",
   key : "",
