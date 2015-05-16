@@ -25,7 +25,10 @@ function sendHome(req, res, respond) {
   var doc, coll;
 
   coll = [];
-  coll.splice(coll.length, 0, transitions("todoListAll"));
+  coll.splice(coll.length, 0, transitions("listAll"));
+  coll.splice(coll.length, 0, transitions("listActive"));
+  coll.splice(coll.length, 0, transitions("listCompleted"));
+  coll.splice(coll.length, 0, transitions("addLink"));
 
   doc = {};
   doc.actions = coll;

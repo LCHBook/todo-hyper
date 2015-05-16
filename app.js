@@ -11,10 +11,11 @@ var http = require('http');
 var querystring = require('querystring');
 
 /// internal modules
-var representation = require('./representation.js');
+var representation = require('./representor.js');
 
 // connector modules
 var home = require('./connectors/home.js');
+var todo = require('./connectors/todo.js');
 var utils = require('./connectors/utils.js');
 
 // shared vars
