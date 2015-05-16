@@ -1,6 +1,6 @@
 /*******************************************************
  * todo-vmc implementation based on ALPS doc 
- * representation router (server)
+ * storage module (server)
  * May 2015
  * Mike Amundsen (@mamund)
  * Soundtrack : Complete Collection : B.B. Kind (2008)
