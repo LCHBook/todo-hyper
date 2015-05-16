@@ -18,10 +18,11 @@ function cj(object, root) {
 
   rtn.collection.version = "1.0";
   rtn.collection.href = root;
-  rtn.collection.title = "ToDo MVC";
 
   // hacked.
   for(var o in object) {
+    
+    rtn.collection.title = getTitle(object[o]);
     rtn.collection.links = getLinks(object[o].actions);
     rtn.collection.items = getItems(object[o].data);
     rtn.collection.queries = getQueries(object[o].actions);
@@ -33,6 +34,10 @@ function cj(object, root) {
   }
   
   return JSON.stringify(rtn, null, 2);
+}
+
+function getTitle(obj) {
+  return obj.prompt||"Cj Browser";
 }
 
 function getLinks(obj, root) {
