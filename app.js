@@ -22,7 +22,7 @@ var utils = require('./connectors/utils.js');
 var root = '';
 var port = (process.env.PORT || 8181);
 var prodType = 'application/json';
-var testType = 'application/json';
+var testType = 'application/vnd.collection+json';
 var htmlType = "text/html";
 var csType = '';
 var csAccept = '';
@@ -45,12 +45,13 @@ function handler(req, res) {
 
   // rudimentary accept-header handling
   csAccept = req.headers["accept"];
-  if(!csAccept || csAccept.indexOf(htmlType)!==-1) {
-    csType = htmlType;
+  if(!csAccept || csAccept.indexOf(testType)!==-1) {
+    csType = testType;
   }
   else {
     csType = csAccept.split(',')[0];
   }
+  csType = testType;
   
   // parse incoming request URL
   parts = [];

@@ -11,9 +11,6 @@ module.exports = json;
 
 function json(object) {
 
-  console.log(JSON.stringify(object, null, 2));
-  console.log(p);
-  
   for (var p in object) {
     switch (p) {
     case "actions":

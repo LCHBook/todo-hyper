@@ -8,21 +8,27 @@
 
 // load representors
 var json = require('./representors/json.js');
+var cj = require('./representors/cj.js');
 
 module.exports = processDoc;
 
 function processDoc(object, mimeType, root) {
   var doc;
 
+  console.log(mimeType);
+  
   // clueless? assume JSON
   if (!mimeType) {
-    mimeType = "application/json";
+    mimeType = "application/vnd.collection+json";
   }
 
   // dispatch to requested representor  
   switch (mimeType.toLowerCase()) {
     case "application/json":
       doc = json(object, root);
+      break;
+    case "application/vnd.collection+json":
+      doc = cj(object, root);
       break;
     default:
       doc = json(object, root);
