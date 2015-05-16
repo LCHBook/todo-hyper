@@ -1,4 +1,3 @@
-
 /*******************************************************
  * todo-vmc implementation based on ALPS doc 
  * JSON objects implementation (server)
