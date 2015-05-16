@@ -56,6 +56,7 @@ exports.file = function(req, res, parts, respond) {
   }
 }
 
+//TK: is this in use?
 exports.exception = function(name, message, code) {
   var rtn = {};
 

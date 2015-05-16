@@ -28,7 +28,7 @@ var csAccept = '';
 
 // routing rules
 var reHome = new RegExp('^\/$','i');
-var reTask = new RegExp('^\/task\/.*','i');
+var reTodo = new RegExp('^\/todo\/.*','i');
 var reFile = new RegExp('^\/files\/.*','i');
 
 // request handler
@@ -64,6 +64,12 @@ function handler(req, res) {
   if(reHome.test(req.url)) {
     flg = true;
     doc = home(req, res, parts, handleResponse);
+  }
+
+  // todo handler
+  if(flg===false && reTodo.test(req.url)) {
+    flg = true;
+    doc = todo(req, res, parts, handleResponse);
   }
 
   // file handler
@@ -119,4 +125,5 @@ function sendResponse(req, res, body, code, headers) {
 http.createServer(handler).listen(port);
 console.log('listening on port '+port);
 
+// EOF
 

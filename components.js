@@ -55,6 +55,7 @@ function loadList(elm, name) {
   return list;
 }
 
+// TK: is this in use?
 function getId(data) {
   var i, x, rtn;
 
