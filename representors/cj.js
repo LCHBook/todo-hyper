@@ -20,14 +20,44 @@ function cj(object, root) {
   rtn.collection.href = root;
   rtn.collection.title = "ToDo MVC";
 
-  rtn.collection.links = [];
+  // hacked.
+  if(object["home"] && object["home"].actions) {
+    rtn.collection.links = buildLinks(object["home"].actions, root);
+  }
+  
   rtn.collection.items = [];
   rtn.collection.queries = [];
   rtn.collection.template = {};
-  rtn.collection.error = {};
+
+  if(object.error) {
+    rtn.collection.error = buildError(object.error);
+  }
   
   return JSON.stringify(rtn, null, 2);
 }
 
+function buildLinks(obj, root) {
+  var link, rtn, i, x;;
+
+  rtn = [];
+  for(i=0,x=obj.length;i<x;i++) {
+    if(obj[i].type==="safe" & obj[i].target==="list") {
+      link = {rel:"self",href:'http:'+root+'/',prompt:"All ToDos"};
+      rtn.push(link);
+    }
+  }
+  return rtn;
+}
+
+function buildError(obj) {
+  var rtn = {};
+
+  rtn.title = "Error";
+  rtn.message = (obj.title||"");
+  rtn.code = (obj.code||"");
+  rtn.url = (obj.url||"");
+  
+  return rtn;
+}
 // EOF
 
