@@ -22,6 +22,8 @@ function main(req, res, parts, respond) {
     if (parts[1] && parts[1].indexOf('?') === -1) {
       switch (parts[1]) {
       case "all":
+      case "active":
+      case "completed":
         sendList(req, res, respond, parts[1]);
         break;
       default:
@@ -165,8 +167,6 @@ function sendItem(req, res, id, respond) {
 
 
 // forms
-
-
 function sendCompleteForm(req, res, id, respond) {
   var item, trans, doc, i, x;
 
