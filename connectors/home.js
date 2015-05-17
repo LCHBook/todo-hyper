@@ -16,6 +16,8 @@ module.exports = main;
 function main(req, res, parts, respond) {
   var code, doc;
 
+  console.log(parts);
+  
   switch (req.method) {
   case 'GET':
     if (parts[1] && parts[1].indexOf('?') === -1) {
@@ -39,12 +41,21 @@ function main(req, res, parts, respond) {
 }
 
 function sendList(req, res, respond) {
-  var doc, coll, tran, root;
+  var doc, coll, tran, root, list, items, i, x;
 
   root = '//'+req.headers.host;
+
+  // get data
+  list = components.todo('list');
   
+  //filter and update the list items as needed
+  items = [];
+  for(i=0,x=list.length;i<x;i++) {
+    items.push(makeItem(list[i], root));
+  }
+  
+  // build up transitions
   coll = [];
-  
   tran  = transitions("listAll");
   tran.href = root + "/";
   tran.rel = "collection";
@@ -64,11 +75,13 @@ function sendList(req, res, respond) {
   tran.rel = "create-form";
   coll.splice(coll.length, 0, tran);
   
+  // compose response graph
   doc = {};
   doc.title = "Home";
   doc.actions = coll;
-  doc.data =  components.todo('list');
+  doc.data =  items;
 
+  // send the response
   respond(req, res, {
     code: 200,
     doc: {
@@ -77,5 +90,67 @@ function sendList(req, res, respond) {
   });
 }
 
+function sendItem(req, res, id, respond) {
+  var item, doc, trans, rot, coll;
+
+  root = '//'+req.headers.host;
+
+  console.log(id);
+  
+  item = components.todo('read', id);
+  if (Array.isArray(item) && item[0] === null) {
+    doc = utils.errorResponse(req, res, 'File Not Found', 404);
+  }
+  else {
+    // clean up
+    item = makeItem(item,root);
+    // build up transitions
+    coll = [];
+    tran = transitions("listAll");
+    tran.href = root + "/";
+    tran.rel = "collection";
+    coll.splice(coll.length, 0, tran);
+  
+    tran = transitions("listActive");
+    tran.href = root + "/"
+    tran.rel = "collection active";
+    coll.splice(coll.length, 0, tran);
+  
+    tran = transitions("listCompleted");
+    tran.href = root + "/"
+    tran.rel = "collection completed";
+    coll.splice(coll.length, 0, tran);
+  
+    tran = transitions("addForm");
+    tran.rel = "create-form";
+    coll.splice(coll.length, 0, tran);
+  
+    // compose response graph
+    doc = {};
+    doc.title = "Home";
+    doc.actions = coll;
+    doc.data = item;
+  
+    // send the response
+    respond(req, res, {
+      code: 200,
+      doc: {
+        home: doc
+      }
+    });
+  }
+}
+
+function makeItem(item,root) {
+  var i, x;
+  var rtn = {};
+  var props = ["id", "title", "completeFlag"]
+  rtn._rel = "item";
+  rtn._href = root+"/" + item.id;
+  for(i=0,x=props.length;i<x;i++) {
+    rtn[props[i]] = item[props[i]];
+  }
+  return rtn;
+}
 // EOF
 

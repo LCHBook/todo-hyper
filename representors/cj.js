@@ -48,9 +48,9 @@ function getLinks(obj, root) {
       if(link.type==="safe" && link.target==="list") {
         if(!link.inputs) {
           rtn.push({
-            rel: link.rel,
-            href: link.href,
-            prompt: link.prompt
+            rel: link.rel||"",
+            href: link.href||"",
+            prompt: link.prompt||""
           });
         }
       }
@@ -60,11 +60,28 @@ function getLinks(obj, root) {
 }
 
 function getItems(obj) {
-  var item, data, rtn, i, x, j, y;
+  var temp, item, data, rtn, i, x, j, y;
   
   rtn = [];
   if(Array.isArray(obj)!==false) {
-    
+    for(i=0,x=obj.length;i<x;i++) {
+      temp = obj[i];
+      item = {};
+      item.rel = temp._rel;
+      item.href = temp._href;
+      data = [];
+      for(var d in temp) {
+        if(d.indexOf("_")!==0) {
+          data.push({
+            name: d,
+            value: temp[d],
+            prompt: d
+          });
+        }
+      }
+      item.data = data;
+      rtn.push(item);
+    }
   }
   return rtn;
 }

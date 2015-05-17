@@ -27,8 +27,8 @@ var csType = '';
 var csAccept = '';
 
 // routing rules
-var reHome = new RegExp('^\/$','i');
 var reFile = new RegExp('^\/files\/.*','i');
+var reHome = new RegExp('^\/.*','i');
 
 // request handler
 function handler(req, res) {
