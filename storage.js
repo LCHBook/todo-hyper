@@ -73,8 +73,6 @@ function getList(object, filter) {
     coll = [];
   }
 
-  console.log(coll);
-  
   return coll;
 }
 

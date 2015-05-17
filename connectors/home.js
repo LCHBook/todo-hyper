@@ -6,7 +6,17 @@
  * Soundtrack : Complete Collection : B.B. Kind (2008)
  *******************************************************/
 
+/*
+  this is where the "real" work happens (HTTP)
+  need to improve/fix the following
+  - map internal properties to interface properties
+  - simplify HTTP method handling (esp. queries?)
+  - define/access interface prop list (which fields to return)
+  ??? maybe some of this is in the transitions system? other source?
+ */
+ 
 var root = '';
+var qs = require('querystring');
 var utils = require('./utils.js');
 var components = require('./../components.js');
 var transitions = require('./../transitions.js');
@@ -16,17 +26,24 @@ module.exports = main;
 function main(req, res, parts, respond) {
   var code, doc;
 
-  console.log(parts);
-  
   switch (req.method) {
   case 'GET':
-    if (parts[1] && parts[1].indexOf('?') === -1) {
-      sendItem(req, res, parts[1], respond);
+    // requested an item
+    if (parts[0] && parts[0].indexOf('?') === -1) {
+      sendItem(req, res, parts[0], respond);
       break;
     }
-    else {
-      sendList(req, res, respond);
+    // requested a filter
+    if(parts[0] && parts[0].indexOf('?')!== -1) {
+      q = req.url.split('?');
+      if (q[1] !== undefined) {
+        qlist = qs.parse(q[1]);
+      }
+      sendList(req, res, respond, qlist);
+      break;
     }
+    // just send the whole list
+    sendList(req, res, respond);
     break;
   case 'POST':
   case 'PUT':
@@ -40,18 +57,32 @@ function main(req, res, parts, respond) {
   }
 }
 
-function sendList(req, res, respond) {
-  var doc, coll, tran, root, list, items, i, x;
+function sendList(req, res, respond, filter) {
+  var doc, coll, tran, root, list, items, i, x, pass;
 
   root = '//'+req.headers.host;
 
   // get data
-  list = components.todo('list');
+  if(filter) {
+    // map interface names to internal names
+    pass = {};
+    for(var f in filter) {
+      switch (f) {
+        case "completed":
+          pass.completeFlag = filter[f];
+          break;
+      }
+    }
+    list = components.todo('filter',pass);
+  }
+  else {
+    list = components.todo('list');
+  }
   
-  //filter and update the list items as needed
+  //filter and update the items as needed
   items = [];
   for(i=0,x=list.length;i<x;i++) {
-    items.push(makeItem(list[i], root));
+    items.push(parseItem(list[i], root));
   }
   
   // build up transitions
@@ -75,35 +106,36 @@ function sendList(req, res, respond) {
   tran.rel = "create-form";
   coll.splice(coll.length, 0, tran);
   
-  // compose response graph
+  // compose graph graph
   doc = {};
-  doc.title = "Home";
+  doc.title = "ToDo";
   doc.actions = coll;
   doc.data =  items;
 
-  // send the response
+  // send the graph
   respond(req, res, {
     code: 200,
     doc: {
-      home: doc
+      todo: doc
     }
   });
 }
 
 function sendItem(req, res, id, respond) {
-  var item, doc, trans, rot, coll;
+  var list, doc, trans, root, coll, items, rtn;
 
   root = '//'+req.headers.host;
 
-  console.log(id);
-  
-  item = components.todo('read', id);
-  if (Array.isArray(item) && item[0] === null) {
-    doc = utils.errorResponse(req, res, 'File Not Found', 404);
+  list = components.todo('read', id);
+  if (Array.isArray(list) && list[0] === null) {
+    rtn = utils.errorResponse(req, res, 'File Not Found', 404);
   }
   else {
-    // clean up
-    item = makeItem(item,root);
+
+    // clean up a single item
+    items = [];
+    items.push(parseItem(list[0],root));
+    
     // build up transitions
     coll = [];
     tran = transitions("listAll");
@@ -127,30 +159,48 @@ function sendItem(req, res, id, respond) {
   
     // compose response graph
     doc = {};
-    doc.title = "Home";
+    doc.title = "ToDo";
     doc.actions = coll;
-    doc.data = item;
-  
-    // send the response
-    respond(req, res, {
+    doc.data = items;
+    rtn = {
       code: 200,
       doc: {
-        home: doc
+        todo: doc
       }
-    });
+    }
   }
+  // send the response
+  respond(req, res, rtn);
 }
 
-function makeItem(item,root) {
-  var i, x;
-  var rtn = {};
-  var props = ["id", "title", "completeFlag"]
+// item fields to display
+function parseItem(item,root) {
+  var i, x, rtn, props;
+  props = ["id","title","completeFlag"];
+  
+  rtn = {};
   rtn._rel = "item";
   rtn._href = root+"/" + item.id;
   for(i=0,x=props.length;i<x;i++) {
-    rtn[props[i]] = item[props[i]];
+    if(props[i]==="completeFlag") {
+      rtn.completed = item[props[i]];
+    }
+    else {
+      rtn[props[i]] = item[props[i]];
+    }
   }
   return rtn;
 }
+
+/*
+  props = [
+    {id : "id"},
+    {title : "title"},
+    {completeFlag : "completed"}
+    ];
+*/
+
+
+
 // EOF
 
