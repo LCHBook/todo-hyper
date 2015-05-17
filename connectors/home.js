@@ -24,26 +24,22 @@ var transitions = require('./../transitions.js');
 module.exports = main;
 
 function main(req, res, parts, respond) {
-  var code, doc;
+  var code, doc, sw, q, qlist;
 
   switch (req.method) {
   case 'GET':
-    // requested an item
-    if (parts[0] && parts[0].indexOf('?') === -1) {
-      sendItem(req, res, parts[0], respond);
-      break;
+    sw = parts[0]||" ";
+    switch(sw[0]) {
+      case '?':
+        sendList(req, res, respond, getQArgs(req));
+        break;
+      case " ":
+        sendList(req, res, respond);
+        break;
+      default:
+        sendItem(req, res, sw, respond);
+        break;
     }
-    // requested a filter
-    if(parts[0] && parts[0].indexOf('?')!== -1) {
-      q = req.url.split('?');
-      if (q[1] !== undefined) {
-        qlist = qs.parse(q[1]);
-      }
-      sendList(req, res, respond, qlist);
-      break;
-    }
-    // just send the whole list
-    sendList(req, res, respond);
     break;
   case 'POST':
   case 'PUT':
@@ -190,6 +186,17 @@ function parseItem(item,root) {
     }
   }
   return rtn;
+}
+
+function getQArgs(req) {
+  var q, qlist;
+  
+  qlist = null;
+  q = req.url.split('?');
+  if (q[1] !== undefined) {
+    qlist = qs.parse(q[1]);
+  }
+  return qlist;
 }
 
 /*
