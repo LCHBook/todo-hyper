@@ -48,6 +48,7 @@ function sendHome(req, res, respond) {
   coll.splice(coll.length, 0, tran);
   
   doc = {};
+  doc.title = "Home";
   doc.actions = coll;
 
   respond(req, res, {

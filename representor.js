@@ -9,6 +9,7 @@
 // load representors
 var json = require('./representors/json.js');
 var cj = require('./representors/cj.js');
+//var halj = require('./representors/halj.js');
 
 module.exports = processDoc;
 

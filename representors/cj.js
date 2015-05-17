@@ -20,7 +20,6 @@ function cj(object, root) {
   rtn.collection.href = root;
 
   for(var o in object) {
-    
     rtn.collection.title = getTitle(object[o]);
     rtn.collection.links = getLinks(object[o].actions);
     rtn.collection.items = getItems(object[o].data);
@@ -36,7 +35,7 @@ function cj(object, root) {
 }
 
 function getTitle(obj) {
-  return obj.prompt||"Cj Browser";
+  return obj.title||"Cj Browser";
 }
 
 function getLinks(obj, root) {
