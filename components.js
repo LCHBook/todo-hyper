@@ -30,6 +30,7 @@ exports.todo = function(action, args1, args2, args3) {
     break;
   case 'update':
     rtn = loadList(storage(object, 'update', args1, args2, args3), object);
+    break;
   default:
     rtn = null;
   }

@@ -8,20 +8,37 @@
 
 var root = '';
 var utils = require('./utils.js');
+var components = require('./../components.js');
 var transitions = require('./../transitions.js');
 
 module.exports = main;
 
 function main(req, res, parts, respond) {
+  var code, doc;
 
-  if (req.method === 'GET') {
-    sendHome(req, res, respond);
-  } else {
-    respond(req, res, utils.errorResponse(req, res, 'Method Not Allowed'));
+  switch (req.method) {
+  case 'GET':
+    if (parts[1] && parts[1].indexOf('?') === -1) {
+      sendItem(req, res, parts[1], respond);
+      break;
+    }
+    else {
+      sendList(req, res, respond);
+    }
+    break;
+  case 'POST':
+  case 'PUT':
+  case 'DELETE':
+  case 'PATCH':
+    respond(req, res, utils.errorResponse(req, res, 'Method Not Allowed', 405));
+    break;
+  default:
+    respond(req, res, utils.errorResponse(req, res, 'Method Not Allowed', 405));
+    break;
   }
 }
 
-function sendHome(req, res, respond) {
+function sendList(req, res, respond) {
   var doc, coll, tran, root;
 
   root = '//'+req.headers.host;
@@ -29,17 +46,17 @@ function sendHome(req, res, respond) {
   coll = [];
   
   tran  = transitions("listAll");
-  tran.href = root + "/todo/";
+  tran.href = root + "/";
   tran.rel = "collection";
   coll.splice(coll.length, 0, tran);
   
   tran = transitions("listActive");
-  tran.href = root + "/todo/"
+  tran.href = root + "/"
   tran.rel ="collection active";
   coll.splice(coll.length, 0, tran);
 
   tran = transitions("listCompleted");
-  tran.href = root + "/todo/"
+  tran.href = root + "/"
   tran.rel = "collection completed";
   coll.splice(coll.length, 0, tran);
   
@@ -50,6 +67,7 @@ function sendHome(req, res, respond) {
   doc = {};
   doc.title = "Home";
   doc.actions = coll;
+  doc.data =  components.todo('list');
 
   respond(req, res, {
     code: 200,

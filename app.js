@@ -15,7 +15,6 @@ var representation = require('./representor.js');
 
 // connector modules
 var home = require('./connectors/home.js');
-var todo = require('./connectors/todo.js');
 var utils = require('./connectors/utils.js');
 
 // shared vars
@@ -29,7 +28,6 @@ var csAccept = '';
 
 // routing rules
 var reHome = new RegExp('^\/$','i');
-var reTodo = new RegExp('^\/todo\/.*','i');
 var reFile = new RegExp('^\/files\/.*','i');
 
 // request handler
@@ -66,12 +64,6 @@ function handler(req, res) {
   if(reHome.test(req.url)) {
     flg = true;
     doc = home(req, res, parts, handleResponse);
-  }
-
-  // todo handler
-  if(flg===false && reTodo.test(req.url)) {
-    flg = true;
-    doc = todo(req, res, parts, handleResponse);
   }
 
   // file handler
