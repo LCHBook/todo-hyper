@@ -6,6 +6,8 @@
  * Soundtrack : Complete Collection : B.B. Kind (2008)
  *******************************************************/
 
+// handles http request, turns into internal graph for response
+
 var root = '';
 var qs = require('querystring');
 var utils = require('./utils.js');

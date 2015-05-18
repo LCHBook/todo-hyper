@@ -6,18 +6,13 @@
  * Soundtrack : Complete Collection : B.B. Kind (2008)
  *******************************************************/
 
-/*
-  this is where the "real" work happens (HTTP)
-  need to improve/fix the following
-  - map internal properties to interface properties
-  - simplify HTTP method handling (esp. queries?)
-  - define/access interface prop list (which fields to return)
-  ??? maybe some of this is in the transitions system? other source?
- */
- 
+// handles HTTP resource operations (per resource)
+
 var root = '';
-var map = require('./../maps.js');
+var props =  ["id","title","completeFlag"];
+
 var qs = require('querystring');
+var map = require('./../maps.js');
 var utils = require('./utils.js');
 var components = require('./../components.js');
 var transitions = require('./../transitions.js');
@@ -25,16 +20,16 @@ var transitions = require('./../transitions.js');
 module.exports = main;
 
 function main(req, res, parts, respond) {
-  var code, doc, sw, q, qlist;
+  var sw;
 
   switch (req.method) {
   case 'GET':
-    sw = parts[0]||" ";
+    sw = parts[0]||"*";
     switch(sw[0]) {
       case '?':
         sendList(req, res, respond, getQArgs(req));
         break;
-      case " ":
+      case "*":
         sendList(req, res, respond);
         break;
       default:
@@ -58,18 +53,13 @@ function sendList(req, res, respond, filter) {
   var doc, coll, tran, root, list, items, i, x, pass, p;
 
   root = '//'+req.headers.host;
-
+  pass = {};
+  
   // get data
   if(filter) {
-    // map interface names to internal names
-    pass = {};
     for(var f in filter) {
-      switch (f) {
-        case "completed":
-          p = map("todo","completed","ex2in");
-          pass[p] = filter[f];
-          break;
-      }
+      p = map("todo",f,"ex2in");
+      pass[p] = filter[f];
     }
     list = components.todo('filter',pass);
   }
@@ -77,10 +67,10 @@ function sendList(req, res, respond, filter) {
     list = components.todo('list');
   }
   
-  //filter and update the items as needed
+  // update interface of items
   items = [];
   for(i=0,x=list.length;i<x;i++) {
-    items.push(parseItem(list[i], root));
+    items.push(parseItem(list[i], props, root));
   }
   
   // build up transitions
@@ -104,7 +94,7 @@ function sendList(req, res, respond, filter) {
   tran.rel = "create-form";
   coll.splice(coll.length, 0, tran);
   
-  // compose graph graph
+  // compose graph 
   doc = {};
   doc.title = "ToDo";
   doc.actions = coll;
@@ -132,7 +122,7 @@ function sendItem(req, res, id, respond) {
 
     // clean up a single item
     items = [];
-    items.push(parseItem(list[0],root));
+    items.push(parseItem(list[0], props, root));
     
     // build up transitions
     coll = [];
@@ -155,7 +145,7 @@ function sendItem(req, res, id, respond) {
     tran.rel = "create-form";
     coll.splice(coll.length, 0, tran);
   
-    // compose response graph
+    // compose graph
     doc = {};
     doc.title = "ToDo";
     doc.actions = coll;
@@ -167,25 +157,26 @@ function sendItem(req, res, id, respond) {
       }
     }
   }
-  // send the response
+  // send graph
   respond(req, res, rtn);
 }
 
-// item fields to display
-function parseItem(item,root) {
-  var i, x, rtn, props;
-  
-  props = ["id","title","completeFlag"];
+// fields to display (with mapping)
+function parseItem(item, props, root) {
+  var i, x, rtn;
   
   rtn = {};
-  rtn._rel = "item";
-  rtn._href = root + "/" + item.id;
+  rtn.meta = {};
+  rtn.meta.rel = "item";
+  rtn.meta.href = root + "/" + item.id;
   for(i=0,x=props.length;i<x;i++) {
     rtn[map("todo",props[i],"in2ex")] = item[props[i]];
   }
   return rtn;
 }
 
+// parse the querystring args
+// TK: move this to utils?
 function getQArgs(req) {
   var q, qlist;
   

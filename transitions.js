@@ -6,6 +6,8 @@
  * Soundtrack : Complete Collection : B.B. Kind (2008)
  *******************************************************/
 
+// holds the list of *all* possible state transitions for this service
+
 // run on first load;
 var trans = [];
 trans = fillTrans();

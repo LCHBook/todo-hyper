@@ -6,6 +6,8 @@
  * Soundtrack : Complete Collection : B.B. Kind (2008)
  *******************************************************/
 
+// handles req-routing, conneg, response-representation
+
 // base modules
 var http = require('http');
 var querystring = require('querystring');

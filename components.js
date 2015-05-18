@@ -6,6 +6,8 @@
  * Soundtrack : Complete Collection : B.B. Kind (2008)
  *******************************************************/
 
+// matches storage calls w/ middleware domain-specific verbs
+
 // access stored data
 var storage = require('./storage.js');
 

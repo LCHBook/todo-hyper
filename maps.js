@@ -6,7 +6,9 @@
  * Soundtrack : Complete Collection : B.B. Kind (2008)
  *******************************************************/
 
-// mapping rules for stored data
+// hold mapping rules for interface v. stored data
+
+
 // key = internal name
 // value = interface name 
 function storeMap() {

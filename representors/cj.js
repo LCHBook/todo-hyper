@@ -27,7 +27,7 @@ function cj(object, root) {
     rtn.collection.template = getTemplate(object[o].actions)
   
     if(object.error) {
-      rtn.collection.error = buildError(object.error);
+      rtn.collection.error = getError(object.error);
     }
   }
   
@@ -67,8 +67,8 @@ function getItems(obj) {
     for(i=0,x=obj.length;i<x;i++) {
       temp = obj[i];
       item = {};
-      item.rel = temp._rel;
-      item.href = temp._href;
+      item.rel = temp.meta.rel;
+      item.href = temp.meta.href;
       data = [];
       for(var d in temp) {
         if(d.indexOf("_")!==0) {
@@ -134,7 +134,7 @@ function getTemplate(obj) {
   return rtn;
 }
 
-function buildError(obj) {
+function getError(obj) {
   var rtn = {};
 
   rtn.title = "Error";

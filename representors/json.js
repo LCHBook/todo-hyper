@@ -10,26 +10,23 @@
 module.exports = json;
 
 function json(object) {
-
+  var i, x;
+  
   for (var p in object) {
     switch (p) {
     case "actions":
       delete object[p];
       break;
     case "todo":
-      object[p].actions = null;
-      if (object[p].data) {
-        object[p] = object[p].data;
-        object[p].data = null;
-      } else {
-        if (p === "home") {
-          delete object[p];
-          object[p].actions = null;
-        }
-      }
-      break;
     default:
       delete object[p].actions;
+      if (object[p].data) {
+        object[p] = object[p].data;
+        delete object[p].data;
+        for(i=0,x=object[p].length;i<x;i++) {
+          delete object[p][i].meta;
+        } 
+      } 
       break;
     }
   }
