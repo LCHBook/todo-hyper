@@ -7,6 +7,7 @@
  *******************************************************/
 
 var fs = require('fs');
+var qs = require('querystring');
 var folder = process.cwd() + '/files/';
 
 exports.errorResponse = function(req, res, msg, code, description) {
@@ -54,6 +55,53 @@ exports.file = function(req, res, parts, respond) {
   } catch (ex) {
     respond(req, res, errorResponse(req, res, "File Not Found", 404));
   }
+}
+
+// process an incoming cj template body
+// see: http://amundsen.com/media-types/collection/examples/#ex-write
+exports.cjBody = cjBody;
+function cjBody(body) {
+  var rtn, data, i, x;
+  
+  rtn = {};
+  data = null;
+  body = JSON.parse(body);
+  
+  // if they include template...
+  if(body.template && body.template.data) {
+    data = body.template.data;
+  }
+
+  // if they only pass data array...
+  if(data===null && body.data) {
+    data = body.data;
+  }
+
+  // create nvp dictionary
+  if(data!==null) {
+    for(i=0,x=data.length;i<x;i++) {
+      rtn[data[i].name]=data[i].value;
+    }
+  }
+  
+  return rtn;
+}
+
+exports.parseBody = function(body, ctype) {
+  var msg;
+  
+  switch (ctype) {
+    case "application/x-www-form-urlencoded":
+      msg = qs.parse(body);
+      break;
+    case "application/vnd.collection+json":
+      msg = cjBody(body);
+      break;
+    default:
+      msg = JSON.parse(body);
+      break;
+  }
+  return msg;
 }
 
 //TK: is this in use?

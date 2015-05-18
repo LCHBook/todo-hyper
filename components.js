@@ -17,6 +17,8 @@ exports.todo = function(action, args1, args2, args3) {
   object = 'todo';
   rtn = null;
 
+  console.log(action+', '+args1);
+  
   switch (action) {
   case 'list':
     rtn = loadList(storage(object, 'list'), object);
@@ -32,6 +34,9 @@ exports.todo = function(action, args1, args2, args3) {
     break;
   case 'update':
     rtn = loadList(storage(object, 'update', args1, args2, args3), object);
+    break;
+  case 'remove':
+    rtn = loadList(storage(object, 'remove', args1), object);
     break;
   default:
     rtn = null;

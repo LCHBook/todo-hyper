@@ -38,14 +38,95 @@ function main(req, res, parts, respond) {
     }
     break;
   case 'POST':
+    addItem(req, res, respond);
+    break;
   case 'PUT':
+    updateItem(req, res, parts[0], respond);
+    break;
   case 'DELETE':
-  case 'PATCH':
-    respond(req, res, utils.errorResponse(req, res, 'Method Not Allowed', 405));
+    removeItem(req, res, parts[0], respond);
     break;
   default:
     respond(req, res, utils.errorResponse(req, res, 'Method Not Allowed', 405));
     break;
+  }
+}
+
+function addItem(req, res, respond) {
+  var body, doc, msg, ctype, item;
+
+  ctype = '';
+  body = '';
+  req.on('data', function(chunk) {
+    body += chunk;
+  });
+
+  req.on('end', function() {
+    try {
+      msg = utils.parseBody(body, req.headers["content-type"]);
+      item = validateItem(msg, props);      
+      if (item.title === "") {
+        doc = utils.errorResponse(req, res, "Missing Title", 400);
+      } else {
+        components.todo('add', item);
+      }
+    } catch (ex) {
+      doc = utils.errorResponse(req, res, 'Server Error', 500);
+    }
+
+    if (!doc) {
+      sendList(req, res, respond, "");
+    } else {
+      respond(req, res, doc);
+    }
+  });
+}
+
+function updateItem(req, res, id, respond) {
+  var body, doc, msg, ctype, item;
+
+  ctype = '';
+  body = '';
+  req.on('data', function(chunk) {
+    body += chunk;
+  });
+
+  req.on('end', function() {
+    try {
+      msg = utils.parseBody(body, req.headers["content-type"]);
+      item = validateItem(msg, props);      
+      if (item.title === "") {
+        doc = utils.errorResponse(req, res, "Missing Title", 400);
+      } else {
+        components.todo('update', id, item);
+      }
+    } catch (ex) {
+      doc = utils.errorResponse(req, res, 'Server Error', 500);
+    }
+
+    if (!doc) {
+      sendList(req, res, respond, "");
+    } else {
+      respond(req, res, doc);
+    }
+  });
+}
+
+function removeItem(req, res, id, respond) {
+  var list, doc;
+  
+  item = components.todo('read', id);
+  if(item===null) {
+    doc = utils.errorResponse(req, res, "File Not Found", 404);
+  }
+  else {
+    list = components.todo('remove', id);
+  }
+  
+  if (!doc) {
+    sendList(req, res, respond, "");
+  } else {
+    respond(req, res, doc);
   }
 }
 
@@ -175,6 +256,19 @@ function parseItem(item, props, root) {
   return rtn;
 }
 
+function validateItem(msg, props) {
+  var item, i, x;
+  
+  item = {};
+  for(i=0,x=props.length;i<x;i++) {
+    item[map("todo",props[i],"ex2in")] = msg[props[i]];
+  }
+  
+  if(!item.completeFlag) {
+    item.completeFlag = false;
+  }
+  return item;
+}
 // parse the querystring args
 // TK: move this to utils?
 function getQArgs(req) {
