@@ -71,7 +71,7 @@ function getItems(obj) {
       item.href = temp.meta.href;
       data = [];
       for(var d in temp) {
-        if(d.indexOf("_")!==0) {
+        if(d!=="meta") {
           data.push({
             name: d,
             value: temp[d],
