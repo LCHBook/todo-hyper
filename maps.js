@@ -70,7 +70,7 @@ function in2ex(object, property) {
         break;
       }
     }
-  }
+  } 
   return rtn;
 }
 

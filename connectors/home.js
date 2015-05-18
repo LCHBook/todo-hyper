@@ -94,7 +94,8 @@ function updateItem(req, res, id, respond) {
   req.on('end', function() {
     try {
       msg = utils.parseBody(body, req.headers["content-type"]);
-      item = validateItem(msg, props);      
+      item = validateItem(msg, props);
+      item.id = id;      
       if (item.title === "") {
         doc = utils.errorResponse(req, res, "Missing Title", 400);
       } else {
@@ -261,11 +262,11 @@ function validateItem(msg, props) {
   
   item = {};
   for(i=0,x=props.length;i<x;i++) {
-    item[map("todo",props[i],"ex2in")] = msg[props[i]];
+    item[props[i]] = msg[map("todo",props[i],"in2ex")];
   }
   
   if(!item.completeFlag) {
-    item.completeFlag = false;
+    item.completeFlag = "false";
   }
   return item;
 }
