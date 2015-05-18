@@ -16,6 +16,7 @@
  */
  
 var root = '';
+var map = require('./../maps.js');
 var qs = require('querystring');
 var utils = require('./utils.js');
 var components = require('./../components.js');
@@ -54,7 +55,7 @@ function main(req, res, parts, respond) {
 }
 
 function sendList(req, res, respond, filter) {
-  var doc, coll, tran, root, list, items, i, x, pass;
+  var doc, coll, tran, root, list, items, i, x, pass, p;
 
   root = '//'+req.headers.host;
 
@@ -65,7 +66,8 @@ function sendList(req, res, respond, filter) {
     for(var f in filter) {
       switch (f) {
         case "completed":
-          pass.completeFlag = filter[f];
+          p = map("todo","completed","ex2in");
+          pass[p] = filter[f];
           break;
       }
     }
@@ -172,18 +174,14 @@ function sendItem(req, res, id, respond) {
 // item fields to display
 function parseItem(item,root) {
   var i, x, rtn, props;
+  
   props = ["id","title","completeFlag"];
   
   rtn = {};
   rtn._rel = "item";
-  rtn._href = root+"/" + item.id;
+  rtn._href = root + "/" + item.id;
   for(i=0,x=props.length;i<x;i++) {
-    if(props[i]==="completeFlag") {
-      rtn.completed = item[props[i]];
-    }
-    else {
-      rtn[props[i]] = item[props[i]];
-    }
+    rtn[map("todo",props[i],"in2ex")] = item[props[i]];
   }
   return rtn;
 }
@@ -198,16 +196,6 @@ function getQArgs(req) {
   }
   return qlist;
 }
-
-/*
-  props = [
-    {id : "id"},
-    {title : "title"},
-    {completeFlag : "completed"}
-    ];
-*/
-
-
 
 // EOF
 

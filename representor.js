@@ -16,8 +16,6 @@ module.exports = processDoc;
 function processDoc(object, mimeType, root) {
   var doc;
 
-  console.log(mimeType);
-  
   // clueless? assume JSON
   if (!mimeType) {
     mimeType = "application/vnd.collection+json";

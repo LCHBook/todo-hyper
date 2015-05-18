@@ -6,11 +6,11 @@
  * Soundtrack : Complete Collection : B.B. Kind (2008)
  *******************************************************/
 
-module.exports = main;
-
 // run on first load;
 var trans = [];
 trans = fillTrans();
+
+module.exports = main;
 
 function main(name) {
   var rtn, i, x;
