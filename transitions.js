@@ -3,7 +3,7 @@
  * transitions document (server)
  * May 2015
  * Mike Amundsen (@mamund)
- * Soundtrack : Complete Collection : B.B. Kind (2008)
+ * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
 // holds the list of *all* possible state transitions for this service
@@ -32,8 +32,6 @@ function main(name) {
 function fillTrans() {
   var trans;
   trans = [];
-  
-  console.log("running loadtrans");
   
   // home transitions
   trans.push({

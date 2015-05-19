@@ -3,7 +3,7 @@
  * transitions document (server)
  * May 2015
  * Mike Amundsen (@mamund)
- * Soundtrack : Complete Collection : B.B. Kind (2008)
+ * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
 // hold mapping rules for interface v. stored data

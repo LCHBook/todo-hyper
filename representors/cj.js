@@ -3,7 +3,7 @@
  * cj representor (server)
  * May 2015
  * Mike Amundsen (@mamund)
- * Soundtrack : Complete Collection : B.B. Kind (2008)
+ * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
 // json representor
@@ -11,8 +11,6 @@ module.exports = cj;
 
 function cj(object, root) {
 
-  console.log(JSON.stringify(object, null, 2));
-  
   var rtn = {};
   rtn.collection = {};
 

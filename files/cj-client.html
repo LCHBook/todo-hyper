@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <!-- 
+  fully-compliant Collection+JSON client 
+  HTML5 scaffolding
+  cj-client.html 
+  @mamund
+  -->
+  <head>
+    <title>Cj</title>
+    <link href="cj-client.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1 id="title"></h1>
+    <div id="links"></div>
+    <div id="items"></div>
+    <div id="edit" class="display:none;"></div>
+    <div id="queries"></div>
+    <div id="template"></div>
+    <div id="error"></div>
+    <div>
+      <pre id="dump"></pre>
+    </div>
+  </body>
+  <script src="cj-client.js">//na </script>
+  <script>
+    window.onload = function() {
+      var pg = cj();
+      pg.init("//localhost:8181/");
+    }
+  </script>
+</html>

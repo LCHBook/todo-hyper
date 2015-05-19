@@ -3,7 +3,7 @@
  * business component (server)
  * May 2015
  * Mike Amundsen (@mamund)
- * Soundtrack : Complete Collection : B.B. Kind (2008)
+ * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
 // matches storage calls w/ middleware domain-specific verbs
@@ -17,31 +17,28 @@ exports.todo = function(action, args1, args2, args3) {
   object = 'todo';
   rtn = null;
 
-  console.log(action+', '+args1);
-  
   switch (action) {
-  case 'list':
-    rtn = loadList(storage(object, 'list'), object);
-    break;
-  case 'read':
-    rtn = loadList(storage(object, 'item', args1), object);
-    break;
-  case 'filter':
-    rtn = loadList(storage(object, 'filter', args1), object);
-    break;
-  case 'add':
-    rtn = loadList(storage(object, 'add', args1), object);
-    break;
-  case 'update':
-    rtn = loadList(storage(object, 'update', args1, args2, args3), object);
-    break;
-  case 'remove':
-    rtn = loadList(storage(object, 'remove', args1), object);
-    break;
-  default:
-    rtn = null;
+    case 'list':
+      rtn = loadList(storage(object, 'list'), object);
+      break;
+    case 'read':
+      rtn = loadList(storage(object, 'item', args1), object);
+      break;
+    case 'filter':
+      rtn = loadList(storage(object, 'filter', args1), object);
+      break;
+    case 'add':
+      rtn = loadList(storage(object, 'add', args1), object);
+      break;
+    case 'update':
+      rtn = loadList(storage(object, 'update', args1, args2, args3), object);
+      break;
+    case 'remove':
+      rtn = loadList(storage(object, 'remove', args1), object);
+      break;
+    default:
+      rtn = null;
   }
-
   return rtn;
 }
 

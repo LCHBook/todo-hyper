@@ -3,7 +3,7 @@
  * JSON objects implementation (server)
  * May 2015
  * Mike Amundsen (@mamund)
- * Soundtrack : Complete Collection : B.B. Kind (2008)
+ * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
 // handles req-routing, conneg, response-representation
@@ -67,12 +67,6 @@ function handler(req, res) {
     sendResponse(req, res, "", 200);
     return;
   }
-  
-  // home handler
-  if(reHome.test(req.url)) {
-    flg = true;
-    doc = home(req, res, parts, handleResponse);
-  }
 
   // file handler
   try {
@@ -82,6 +76,12 @@ function handler(req, res) {
     }
   }
   catch(ex) {}
+  
+  // home handler
+  if(reHome.test(req.url)) {
+    flg = true;
+    doc = home(req, res, parts, handleResponse);
+  }
   
   // final error
   if(flg===false) {
