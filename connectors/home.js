@@ -157,6 +157,12 @@ function sendList(req, res, respond, filter) {
   
   // build up transitions
   coll = [];
+
+  tran = transitions("self");
+  tran.href = root +"/"; 
+  tran.rel = ["self"];
+  coll.splice(coll.length, 0, tran);
+
   tran  = transitions("listAll");
   tran.href = root + "/";
   tran.rel = ["collection"];
@@ -173,6 +179,7 @@ function sendList(req, res, respond, filter) {
   coll.splice(coll.length, 0, tran);
   
   tran = transitions("addForm");
+  tran.href = root + "/";
   tran.rel = ["create-form"];
   coll.splice(coll.length, 0, tran);
   
@@ -208,6 +215,12 @@ function sendItem(req, res, id, respond) {
     
     // build up transitions
     coll = [];
+
+    tran = transitions("self");
+    tran.href = root +"/" + id;
+    tran.rel = ["self"];
+    coll.splice(coll.length, 0, tran);
+    
     tran = transitions("listAll");
     tran.href = root + "/";
     tran.rel = ["collection"];
@@ -222,8 +235,14 @@ function sendItem(req, res, id, respond) {
     tran.href = root + "/"
     tran.rel = ["completed","collection"];
     coll.splice(coll.length, 0, tran);
-  
+
+    tran = transitions("editForm");
+    tran.href = root + "/" + id;
+    tran.rel = ["edit"];
+    coll.splice(coll.length, 0, tran);
+    
     tran = transitions("addForm");
+    tran.href = root +"/";
     tran.rel = ["create-form"];
     coll.splice(coll.length, 0, tran);
   

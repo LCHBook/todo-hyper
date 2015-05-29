@@ -10,7 +10,6 @@
   HACKS & ISSUES:
   - http: hacked into the root here
   - 'files' hacked into rels for HAL docs
-  - item link collection not tested
   - item root+id forced here
   - no support for CURIES
   - no support for _embedded
@@ -22,7 +21,7 @@ function haljson(object, root) {
   var hal;
   
   hal = {};
-  hal = _links = {};
+  hal._links = {};
   
   root = root.replace(/^\/\//,"http://");
   
@@ -36,43 +35,19 @@ function haljson(object, root) {
   return JSON.stringify(hal, null, 2);
 }
 
-function getLinks(object, root, s) {
-  var rtn, coll, links, i, x, rels, kind, rel, url, inputs, temp;
+function getLinks(object, root, o) {
+  var coll, items, links, i, x, rels;
   
-  console.log(JSON.stringify(object,null,2));
-  
-  rtn = {};
-  rels = root+"/files/"+s+".html#{rel}";
+  rels = root+"/files/"+o+".html#{rel}";
 
   links = {};
-  links.self = {href:root};
+  //links.self = {href:root};
   
   // handle list-level actions
   if(object.actions) {
     coll = object.actions;
     for(i=0,x=coll.length;i<x;i++) {
-      if(coll[i].target === "list") {
-        rel = coll[i].rel[0]||"related";
-        url = coll[i].href.replace(/^\/\//,"http://")||"";
-        temp = false;
-        if(coll[i].inputs && coll[i].type==="safe") {
-          temp = true;
-          inputs = coll[i].inputs;
-          for(j=0,y=inputs.length;j<y;j++) {
-            if(j===0) {
-              url += '{?';
-            }
-            else {
-              url+=',';
-            }
-            url += inputs[j].name;
-            if(j===y-1) {
-              url += '}';
-            }
-          }
-        }
-        links[rels.replace("{rel}",rel)] = {href:url, title:coll[i].prompt, templated:temp};
-      }
+      links = getLink(links, coll[i], rels);
     }
     
     // handle list-level data
@@ -85,18 +60,17 @@ function getLinks(object, root, s) {
         item.title = coll[i].title||"";
         items.push(item);
       }
-      links[rels.replace("{rel}",s.toLowerCase())] = items;
+      links[rels.replace("{rel}",o.toLowerCase())] = items;
     }
-    rtn = links;
   }
-  return rtn;
+  return links;
 }
 
-function getProperties(hal, object, root, s) {
-  var rtn, props, links, rels, id;
+function getProperties(hal, object, root, o) {
+  var rtn, props, rels, id;
   
   rtn = hal;
-  rels = root+"/files/"+s+".html#{rel}";
+  rels = root+"/files/"+o+".html#{rel}";
   
   if(object.data) {
     props = object.data[0];
@@ -108,20 +82,31 @@ function getProperties(hal, object, root, s) {
     }
   }
   
-  // not tested
-  if(object.actions) {
-    links = object.actions;
-    for(j=0,y=links.length;j<y;j++) {
-      if(links[j].target==="item") {
-        rtn._links[rels.replace("{rel}",links[j].name.replace("Link","").replace("Form","").toLowerCase())] = {href:root+'/'+links[j].kind+'/'+links[j].key+'/'+id, title:links[j].prompt};
-      }
-    }
-  }
-
   // fix up self link for this representation
-  rtn._links.self = {href:root+'/'+id};
+  //rtn._links.self = {href:root+'/'+id};
   
   return rtn;
+}
+
+function getLink(links, link, rels) {
+  var rel, url, temp, inputs, i, x;
+
+  rel = link.rel[0]||"related";
+  url = link.href.replace(/^\/\//,"http://")||"";
+  
+  temp = false;
+  if(link.inputs && link.type==="safe") {
+    temp = true;
+    inputs = link.inputs;
+    for(i=0, x=inputs.length; i<x; i++) {
+      url += (i===0 ? '{?' : ',');
+      url += inputs[i].name;
+      url += (i===x-1?'}':'');
+    }
+  }
+  
+  links[(rel==="self"?rel:rels.replace("{rel}",rel))] = {href:url, title:link.prompt, templated:temp};
+  return links;
 }
 
 // EOF

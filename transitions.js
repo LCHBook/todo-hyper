@@ -32,7 +32,16 @@ function main(name) {
 function fillTrans() {
   var trans;
   trans = [];
-  
+
+  // self transition
+  trans.push({
+    name : "selfLink",
+    type : "safe",
+    kind : "self",
+    target : "item",
+    prompt : "Reload"
+  });
+    
   // home transitions
   trans.push({
     name : "homeLink",
@@ -82,6 +91,7 @@ function fillTrans() {
     name : "addForm",
     type : "unsafe",
     kind : "todo",
+    target : "list",
     prompt : "Add ToDo",
     inputs : [
       {name : "title", prompt : "Title"},
