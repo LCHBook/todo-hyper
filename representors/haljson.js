@@ -7,41 +7,41 @@
  *******************************************************/
 
 /*
-  HACKS & ISSUES:
+  HACKS:
   - http: hacked into the root here
-  - 'files' hacked into rels for HAL docs
-  - item root+id forced here
+
+  ISSUES:
   - no support for CURIES
   - no support for _embedded
+  - '/files/{object}.html#{rel}' fallback for HAL rels
 */
 
 module.exports = haljson;
 
-function haljson(object, root) {
+function haljson(object, root, relRoot) {
   var hal;
   
   hal = {};
   hal._links = {};
-  
   root = root.replace(/^\/\//,"http://");
   
   for(var o in object) {
-    hal._links = getLinks(object[o], root, o);
+    rels = relRoot||root+"/files/"+o+".html#{rel}";
+    hal._links = getLinks(object[o], root, o, rels);
     if(object[o].data && object[o].data.length===1) {
-      hal = getProperties(hal, object[o], root, o);
+      hal = getProperties(hal, object[o], root, o, rels);
     }
   }
        
   return JSON.stringify(hal, null, 2);
 }
 
-function getLinks(object, root, o) {
+function getLinks(object, root, o, relRoot) {
   var coll, items, links, i, x, rels;
   
-  rels = root+"/files/"+o+".html#{rel}";
-
+  o = o.toLowerCase();
   links = {};
-  //links.self = {href:root};
+  rels = relRoot;
   
   // handle list-level actions
   if(object.actions) {
@@ -60,17 +60,18 @@ function getLinks(object, root, o) {
         item.title = coll[i].title||"";
         items.push(item);
       }
-      links[rels.replace("{rel}",o.toLowerCase())] = items;
+      links[(ianaRel(o)?o:rels.replace("{rel}",o))] = items;
     }
   }
+  
   return links;
 }
 
-function getProperties(hal, object, root, o) {
+function getProperties(hal, object, root, o, relRoot) {
   var rtn, props, rels, id;
   
   rtn = hal;
-  rels = root+"/files/"+o+".html#{rel}";
+  rels = relRoot;
   
   if(object.data) {
     props = object.data[0];
@@ -81,9 +82,6 @@ function getProperties(hal, object, root, o) {
       }
     }
   }
-  
-  // fix up self link for this representation
-  //rtn._links.self = {href:root+'/'+id};
   
   return rtn;
 }
@@ -104,9 +102,14 @@ function getLink(links, link, rels) {
       url += (i===x-1?'}':'');
     }
   }
+  links[(ianaRel(rel)?rel:rels.replace("{rel}",rel))] = {href:url, title:link.prompt, templated:temp};
   
-  links[(rel==="self"?rel:rels.replace("{rel}",rel))] = {href:url, title:link.prompt, templated:temp};
   return links;
+}
+
+function ianaRel(rel) {
+  var ianaRels = "self";
+  return (ianaRels.indexOf(rel)!==-1);
 }
 
 // EOF
