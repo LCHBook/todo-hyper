@@ -1,6 +1,6 @@
 /*******************************************************
  * todo-mvc implementation based on ALPS doc
- * JSON objects implementation (server)
+ * service implementation (server)
  * May 2015
  * Mike Amundsen (@mamund)
  * Soundtrack : Complete Collection : B.B. King (2008)
@@ -51,7 +51,7 @@ function handler(req, res) {
   else {
     csType = csAccept.split(',')[0];
   }
-  csType = testType;
+  //csType = testType; <-- uncomment to force Cj responses
   
   // parse incoming request URL
   parts = [];

@@ -9,7 +9,7 @@
   - built/tested for chrome browser (YMMV on other browsers)
   - designed to act as a "validator" for a human-driven Cj client.
   - not production robust (missing error-handling, perf-tweaking, etc.)
-  - report issues to 
+  - report issues to https://github.com/collection-json/cj-client
 */
 
 function cj() {
@@ -157,6 +157,7 @@ function cj() {
             }
             else {
               a = d.anchor({className:"item",href:link.href,rel:link.rel,text:link.prompt});
+              a.onclick = httpGet;
               d.push(a, p);
             }
             d.push(p,dd);
@@ -429,22 +430,22 @@ function cj() {
     return false;
   }
   // low-level HTTP stuff
-	function req(url, method, body) {
-		var ajax = new XMLHttpRequest();
-		ajax.onreadystatechange = function(){rsp(ajax)};
-		ajax.open(method, url);
-		ajax.setRequestHeader("accept",g.ctype);
-		if(body && body!==null) {
-			ajax.setRequestHeader("content-type", g.ctype);
-		}
-		ajax.send(body);
-	}
-	function rsp(ajax) {
-		if(ajax.readyState===4) {
-			g.cj = JSON.parse(ajax.responseText);
-			parseCj();
-		}
-	}
+  function req(url, method, body) {
+    var ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function(){rsp(ajax)};
+    ajax.open(method, url);
+    ajax.setRequestHeader("accept",g.ctype);
+    if(body && body!==null) {
+      ajax.setRequestHeader("content-type", g.ctype);
+    }
+    ajax.send(body);
+  }
+  function rsp(ajax) {
+    if(ajax.readyState===4) {
+      g.cj = JSON.parse(ajax.responseText);
+      parseCj();
+    }
+  }
 
   // export function
   var that = {};
@@ -458,6 +459,7 @@ function cj() {
 // **************************
 function domHelp() {
 
+  // high-level helpers for Cj-DOM
   function para(args) {
     var p;
     
@@ -536,11 +538,15 @@ function domHelp() {
 
     return lnk;
   }
+  
+  // low-level helpers for DOM
   function push(source,target) {
     target.appendChild(source);
   }
 
   function tags(tag,elm) {
+    var rtn;
+    
     if(elm) {
       rtn = elm.getElementsByTagName(tag);
     }
@@ -568,7 +574,7 @@ function domHelp() {
     }
   }
 
-  // publish
+  // publish functions
   that = {};
   that.push = push;
   that.tags = tags;
@@ -586,3 +592,4 @@ function domHelp() {
   return that;
 }
 
+// *** EOD ***

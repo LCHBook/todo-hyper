@@ -1,0 +1,22 @@
+{
+  "name": "todomvc",
+  "version": "1.0.0",
+  "description": "Sample Cj Server and Fully-compliant Cj Client",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": "0.10.25"
+  },
+  "dependencies" : { },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LCHBook/simple-todo.git"
+  },
+  "keywords": [
+    "hypermedia",
+    "amundsen"
+  ],
+  "license": "MIT"
+}

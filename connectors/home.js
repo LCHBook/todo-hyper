@@ -270,6 +270,7 @@ function validateItem(msg, props) {
   }
   return item;
 }
+
 // parse the querystring args
 // TK: move this to utils?
 function getQArgs(req) {

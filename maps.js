@@ -1,13 +1,12 @@
 /*******************************************************
  * todo-mvc implementation based on ALPS doc
- * transitions document (server)
+ * mapping document (server)
  * May 2015
  * Mike Amundsen (@mamund)
  * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
 // hold mapping rules for interface v. stored data
-
 
 // key = internal name
 // value = interface name 
@@ -43,7 +42,7 @@ function main(object, property, action) {
 }
 
 // convert interface name 
-//to internal name
+// to internal name
 function ex2in(object, property) {
   var rtn;
   
@@ -58,8 +57,8 @@ function ex2in(object, property) {
   return rtn;
 }
 
-//convert internal name 
-//to interface name
+// convert internal name 
+// to interface name
 function in2ex(object, property) {
   var rtn;
   
