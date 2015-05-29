@@ -6,7 +6,7 @@
  * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
-// handles req-routing, conneg, response-representation
+// handles routing, conneg, response-representation
 
 // base modules
 var http = require('http');
@@ -24,6 +24,7 @@ var root = '';
 var port = (process.env.PORT || 8181);
 var prodType = 'application/json';
 var testType = 'application/vnd.collection+json';
+var haljsonType = 'application/vnd.hal+json';
 var htmlType = "text/html";
 var csType = '';
 var csAccept = '';
@@ -51,7 +52,7 @@ function handler(req, res) {
   else {
     csType = csAccept.split(',')[0];
   }
-  //csType = testType; <-- uncomment to force Cj responses
+  csType = haljsonType; //<-- uncomment to force Cj responses
   
   // parse incoming request URL
   parts = [];

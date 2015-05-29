@@ -15,7 +15,7 @@ function cj(object, root) {
   rtn.collection = {};
 
   rtn.collection.version = "1.0";
-  rtn.collection.href = root;
+  rtn.collection.href = root.replace(/^\/\//,"http://")||"";
 
   for(var o in object) {
     rtn.collection.title = getTitle(object[o]);
@@ -46,8 +46,8 @@ function getLinks(obj, root) {
       if(link.type==="safe" && link.target==="list") {
         if(!link.inputs) {
           rtn.push({
-            rel: link.rel||"",
-            href: link.href||"",
+            rel: link.rel.join(" ")||"",
+            href: link.href.replace(/^\/\//,"http://")||"",
             prompt: link.prompt||""
           });
         }
@@ -65,8 +65,8 @@ function getItems(obj) {
     for(i=0,x=obj.length;i<x;i++) {
       temp = obj[i];
       item = {};
-      item.rel = temp.meta.rel;
-      item.href = temp.meta.href;
+      item.rel = temp.meta.rel.join(" ");
+      item.href = temp.meta.href.replace(/^\/\//,"http://")||"";
       data = [];
       for(var d in temp) {
         if(d!=="meta") {
@@ -93,8 +93,8 @@ function getQueries(obj) {
       query = obj[i];
       if(query.type==="safe" && query.inputs && Array.isArray(query.inputs)) {
         q = {};
-        q.rel = query.rel;
-        q.href = query.href;
+        q.rel = query.rel.join(" ");
+        q.href = query.href.replace(/^\/\//,"http://")||"";
         q.prompt = query.prompt||"";
         data = [];
         for(j=0,y=query.inputs.length;j<y;j++) {
@@ -120,7 +120,7 @@ function getTemplate(obj) {
       if(obj[i].name==="addForm") {
         temp = obj[i];
         rtn.prompt = temp.prompt;
-        rtn.rel = temp.rel;
+        rtn.rel = temp.rel.join(" ");
         for(j=0,y=temp.inputs.length;j<y;j++) {
           d = temp.inputs[j];
           data.push({name:d.name||"input"+j,value:d.value||"",prompt:d.prompt||d.name});

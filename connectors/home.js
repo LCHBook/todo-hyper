@@ -27,7 +27,7 @@ function main(req, res, parts, respond) {
     sw = parts[0]||"*";
     switch(sw[0]) {
       case '?':
-        sendList(req, res, respond, getQArgs(req));
+        sendList(req, res, respond, utils.getQArgs(req));
         break;
       case "*":
         sendList(req, res, respond);
@@ -159,21 +159,21 @@ function sendList(req, res, respond, filter) {
   coll = [];
   tran  = transitions("listAll");
   tran.href = root + "/";
-  tran.rel = "collection";
+  tran.rel = ["collection"];
   coll.splice(coll.length, 0, tran);
   
   tran = transitions("listActive");
   tran.href = root + "/"
-  tran.rel ="collection active";
+  tran.rel =["active","collection"];
   coll.splice(coll.length, 0, tran);
 
   tran = transitions("listCompleted");
   tran.href = root + "/"
-  tran.rel = "collection completed";
+  tran.rel = ["completed","collection"];
   coll.splice(coll.length, 0, tran);
   
   tran = transitions("addForm");
-  tran.rel = "create-form";
+  tran.rel = ["create-form"];
   coll.splice(coll.length, 0, tran);
   
   // compose graph 
@@ -210,21 +210,21 @@ function sendItem(req, res, id, respond) {
     coll = [];
     tran = transitions("listAll");
     tran.href = root + "/";
-    tran.rel = "collection";
+    tran.rel = ["collection"];
     coll.splice(coll.length, 0, tran);
   
     tran = transitions("listActive");
     tran.href = root + "/"
-    tran.rel = "collection active";
+    tran.rel = ["active","collection"];
     coll.splice(coll.length, 0, tran);
   
     tran = transitions("listCompleted");
     tran.href = root + "/"
-    tran.rel = "collection completed";
+    tran.rel = ["completed","collection"];
     coll.splice(coll.length, 0, tran);
   
     tran = transitions("addForm");
-    tran.rel = "create-form";
+    tran.rel = ["create-form"];
     coll.splice(coll.length, 0, tran);
   
     // compose graph
@@ -249,7 +249,7 @@ function parseItem(item, props, root) {
   
   rtn = {};
   rtn.meta = {};
-  rtn.meta.rel = "item";
+  rtn.meta.rel = ["item"];
   rtn.meta.href = root + "/" + item.id;
   for(i=0,x=props.length;i<x;i++) {
     rtn[map("todo",props[i],"in2ex")] = item[props[i]];
@@ -271,18 +271,6 @@ function validateItem(msg, props) {
   return item;
 }
 
-// parse the querystring args
-// TK: move this to utils?
-function getQArgs(req) {
-  var q, qlist;
-  
-  qlist = null;
-  q = req.url.split('?');
-  if (q[1] !== undefined) {
-    qlist = qs.parse(q[1]);
-  }
-  return qlist;
-}
 
 // EOF
 

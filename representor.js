@@ -11,6 +11,7 @@
 // load representors
 var json = require('./representors/json.js');
 var cj = require('./representors/cj.js');
+var haljson = require('./representors/haljson.js');
 
 module.exports = processDoc;
 
@@ -29,6 +30,9 @@ function processDoc(object, mimeType, root) {
       break;
     case "application/vnd.collection+json":
       doc = cj(object, root);
+      break;
+    case "application/vnd.hal+json":
+      doc = haljson(object, root);
       break;
     default:
       doc = json(object, root);

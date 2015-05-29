@@ -7,7 +7,7 @@
  *******************************************************/
 
 // json representor
-// strip out transitions
+// strip out action info
 module.exports = json;
 
 function json(object) {

@@ -104,6 +104,19 @@ exports.parseBody = function(body, ctype) {
   return msg;
 }
 
+// parse the querystring args
+exports.getQArgs = getQArgs;
+function getQArgs(req) {
+  var q, qlist;
+  
+  qlist = null;
+  q = req.url.split('?');
+  if (q[1] !== undefined) {
+    qlist = qs.parse(q[1]);
+  }
+  return qlist;
+}
+
 //TK: is this in use?
 exports.exception = function(name, message, code) {
   var rtn = {};
