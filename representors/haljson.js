@@ -26,6 +26,7 @@ function haljson(object, root, relRoot) {
   root = root.replace(/^\/\//,"http://");
   
   for(var o in object) {
+    o = o.toLowerCase();
     rels = relRoot||root+"/files/"+o+".html#{rel}";
     hal._links = getLinks(object[o], root, o, rels);
     if(object[o].data && object[o].data.length===1) {
@@ -39,7 +40,6 @@ function haljson(object, root, relRoot) {
 function getLinks(object, root, o, relRoot) {
   var coll, items, links, i, x, rels;
   
-  o = o.toLowerCase();
   links = {};
   rels = relRoot;
   
@@ -108,7 +108,7 @@ function getLink(links, link, rels) {
 }
 
 function ianaRel(rel) {
-  var ianaRels = "self";
+  var ianaRels = "self related";
   return (ianaRels.indexOf(rel)!==-1);
 }
 
