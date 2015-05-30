@@ -96,7 +96,7 @@ function getLink(links, link, relRoot) {
   
   tmpl = false;
   if(link.inputs && link.type==="safe") {
-    temp = true;
+    tmpl = true;
     inputs = link.inputs;
     for(i=0, x=inputs.length; i<x; i++) {
       url += (i===0 ? '{?' : ',');
