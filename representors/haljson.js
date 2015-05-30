@@ -7,8 +7,12 @@
  *******************************************************/
 
 /*
+  DEPENDS:
+    - has fatal dependency to transitions objects
+    
   HACKS:
   - http: hacked into the root here
+  - assumes "title" property for link array
 
   ISSUES:
   - no support for:
@@ -19,7 +23,7 @@
     - _links.name
     - _links.deprecation
     - _links.profile
-  - '/files/{object}.html#{rel}' fallback for HAL rels
+  - uses '/files/{object}.html#{rel}' as relRoot fallback
 */
 
 module.exports = haljson;
