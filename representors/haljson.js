@@ -11,8 +11,14 @@
   - http: hacked into the root here
 
   ISSUES:
-  - no support for CURIES
-  - no support for _embedded
+  - no support for:
+    - CURIES
+    - _embedded
+    - _links.hreflang
+    - _links.type
+    - _links.name
+    - _links.deprecation
+    - _links.profile
   - '/files/{object}.html#{rel}' fallback for HAL rels
 */
 
@@ -30,7 +36,7 @@ function haljson(object, root, relRoot) {
     rels = relRoot||root+"/files/"+o+".html#{rel}";
     hal._links = getLinks(object[o], root, o, rels);
     if(object[o].data && object[o].data.length===1) {
-      hal = getProperties(hal, object[o], root, o, rels);
+      hal = getProperties(hal, object[o]);
     }
   }
        
@@ -38,21 +44,20 @@ function haljson(object, root, relRoot) {
 }
 
 function getLinks(object, root, o, relRoot) {
-  var coll, items, links, i, x, rels;
+  var coll, items, links, i, x;
   
   links = {};
-  rels = relRoot;
   
   // handle list-level actions
   if(object.actions) {
     coll = object.actions;
     for(i=0,x=coll.length;i<x;i++) {
-      links = getLink(links, coll[i], rels);
+      links = getLink(links, coll[i], relRoot);
     }
     
     // handle list-level data
-    coll = object.data;
-    if(coll && coll.length>1) {
+    if(object.data) {
+      coll = object.data;
       items = [];
       for(i=0,x=coll.length;i<x;i++) {
         item = {};
@@ -60,39 +65,36 @@ function getLinks(object, root, o, relRoot) {
         item.title = coll[i].title||"";
         items.push(item);
       }
-      links[(ianaRel(o)?o:rels.replace("{rel}",o))] = items;
+      links[checkRel(o, relRoot)] = items;
     }
   }
   
   return links;
 }
 
-function getProperties(hal, object, root, o, relRoot) {
-  var rtn, props, rels, id;
+function getProperties(hal, object) { 
+  var props;
   
-  rtn = hal;
-  rels = relRoot;
-  
-  if(object.data) {
+  if(object.data && object.data[0]) {
     props = object.data[0];
-    id = object.data[0].id;
     for(var p in props) {
       if(p!=='meta') {
-        rtn[p] = props[p];
+        hal[p] = props[p];
       }
     }
   }
   
-  return rtn;
+  return hal;
 }
 
-function getLink(links, link, rels) {
-  var rel, url, temp, inputs, i, x;
+function getLink(links, link, relRoot) {
+  var rel, url, name, tmpl, inputs, i, x;
 
   rel = link.rel[0]||"related";
   url = link.href.replace(/^\/\//,"http://")||"";
+  prompt = link.prompt||rel;
   
-  temp = false;
+  tmpl = false;
   if(link.inputs && link.type==="safe") {
     temp = true;
     inputs = link.inputs;
@@ -102,14 +104,14 @@ function getLink(links, link, rels) {
       url += (i===x-1?'}':'');
     }
   }
-  links[(ianaRel(rel)?rel:rels.replace("{rel}",rel))] = {href:url, title:link.prompt, templated:temp};
+  links[checkRel(rel, relRoot)] = {href:url, title:prompt, templated:tmpl};
   
   return links;
 }
 
-function ianaRel(rel) {
-  var ianaRels = "self related";
-  return (ianaRels.indexOf(rel)!==-1);
+function checkRel(rel, relRoot) {
+  var clearRel = "self related";
+  return (clearRel.indexOf(rel)!==-1?rel:relRoot.replace("{rel}",rel));
 }
 
 // EOF
