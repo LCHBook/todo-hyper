@@ -7,8 +7,11 @@
  *******************************************************/
 
 /*
+  REFERENCE:
+    https://tools.ietf.org/html/draft-kelly-json-hal-06
+    
   DEPENDS:
-    - has fatal dependency to transitions objects
+    - has fatal dependency to transitions.js
     
   HACKS:
   - http: hacked into the root here
@@ -28,6 +31,7 @@
 
 module.exports = haljson;
 
+// emit valid hal body
 function haljson(object, root, relRoot) {
   var hal;
   
@@ -47,19 +51,20 @@ function haljson(object, root, relRoot) {
   return JSON.stringify(hal, null, 2);
 }
 
+// emit _links object
 function getLinks(object, root, o, relRoot) {
   var coll, items, links, i, x;
   
   links = {};
   
-  // handle list-level actions
+  // list-level actions
   if(object.actions) {
     coll = object.actions;
     for(i=0,x=coll.length;i<x;i++) {
       links = getLink(links, coll[i], relRoot);
     }
     
-    // handle list-level data
+    // list-level objects
     if(object.data) {
       coll = object.data;
       items = [];
@@ -76,6 +81,7 @@ function getLinks(object, root, o, relRoot) {
   return links;
 }
 
+// emit root properties
 function getProperties(hal, object) { 
   var props;
   
@@ -91,6 +97,7 @@ function getProperties(hal, object) {
   return hal;
 }
 
+// the shared link builder
 function getLink(links, link, relRoot) {
   var rel, url, name, tmpl, inputs, i, x;
 
@@ -113,6 +120,7 @@ function getLink(links, link, relRoot) {
   return links;
 }
 
+// dectermine naked-rel or RFC5988
 function checkRel(rel, relRoot) {
   var clearRel = "self related";
   return (clearRel.indexOf(rel)!==-1?rel:relRoot.replace("{rel}",rel));
