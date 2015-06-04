@@ -1,0 +1,72 @@
+= ToDo Service - HAL Client
+:author: Mike Amundsen
+:email: mca@mamund.com
+:toc:
+
+== Overview
+(TK: data goes here)
+
+== RFC2119 Words
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", 
+"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be 
+interpreted as described in link:http://tools.ietf.org/html/rfc2119[RFC2119].
+
+== Media Type Support
+All server response bodies SHOULD be returned using the xref:hal-json[HAL+JSON Media Type]. All client write request bodies (e.g. POST and PUT) MUST be sent using the  
+xref:plain-json[JSON Media Type]. All client read requests (e.g. GET) MUST
+be sent using xref:query-strings[URL Query] strings.
+
+== Supported Operations and Link Relation Values
+Below is the list of link relation values and the operations they perform.
+
+[[self]]
+=== Reload the Current Representation : +rel="self"+
+The +self+ link relation value identifies the link used to reload the current resource representation.
+
+
+
+== Data Elements
+the following data elements are used in the Task Service. All server and client
+applications should be ready to handle these data elements for display and processing.
+
+== Media Types and Query Strings
+Below is a list of payloads and query strings that can be sent from the client 
+to the server along with a list of the common server responses.
+
+[[hal-json]]
+=== HAL Media Type : +application/vnd.hal+json+
+The link:https://tools.ietf.org/html/draft-kelly-json-hal-06[HAL Media Type] (as
+described in draft-kelly-json-hal-06) is used to send responses from the server to the client. 
+
+Client applications SHOULD support and the MUST and SHOULD-level elements in the HAL media type specification.
+
+[[plain-json]]
+=== JSON Media Type : +application/json+
+The link:https://tools.ietf.org/html/rfc7159[JSON Media Type] (as
+described in RFC7159) is used to send updates from the client to the server. 
+Essentially, this means clients build payloads using plain JSON objects with a set of name/value pairs.
+
+For example, if the hypermedia control indicates an arguments named +title+ and +completed+ can be sent to the server, the client can format a payload that looks like the following:
+
+.JSON Payload
+----
+{
+  "title" : "this is a new task",
+  "completed" : "false"
+}
+----
+
+[[query-strings]]
+=== URL Query Strings
+The link:http://tools.ietf.org/html/rfc3986#section-3[URI Query] (as described in 
+RFC3986, is used to send read-only queries from the client to the server. Essentially, 
+this means clients build URL query strings using a name/value pair approach.
+
+For example, if the hypermedia cxontrol indicates an argument named +title+ can be
+sent to the server, the clienht can format a query URL that looks like the following:
+
+.URL Query String
+----
+http://example.org/?title=this+is+a+test
+----
+

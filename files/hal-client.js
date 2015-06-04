@@ -66,7 +66,7 @@ function hal() {
       for(var link in coll) {
         if(Array.isArray(coll[link])===true) {
           sel = d.node("select");          
-          sel.onclick = halSelectGet;
+          sel.onclick = halSelect;
           opt = d.option({text:"Select",value:""});
           d.push(opt,sel);
           
@@ -93,7 +93,7 @@ function hal() {
           });
 
           li = d.node("li");
-          li.onclick = halLinkGet;
+          li.onclick = halLink;
           d.push(a, li);
           d.push(li, ul);
         }
@@ -135,7 +135,7 @@ function hal() {
     form.action = href;
     form.method = f.method;
     form.className = f.rel;
-    form.onsubmit = halFormSubmit;
+    form.onsubmit = halSubmit;
     fs = d.node("fieldset");
     lg = d.node("legend");
     lg.innerHTML = title||"Form";
@@ -186,7 +186,7 @@ function hal() {
   }
 
   // handle GET for select
-  function halSelectGet(e) {
+  function halSelect(e) {
     var elm, href;
 
     elm = e.target;
@@ -198,7 +198,7 @@ function hal() {
   }
 
   // handle GET for lnks
-  function halLinkGet(e) {
+  function halLink(e) {
     var elm, form, href;
 
     elm = e.target;
@@ -213,7 +213,7 @@ function hal() {
   }
 
   // handle HAL forms 
-  function halFormSubmit(e) {
+  function halSubmit(e) {
     return false;
   }
   
@@ -315,7 +315,7 @@ function halForms() {
     var rtn, i, x;
 
     for(i=0, x=forms.length;i<x;i++) {
-      if(forms[i].rel===rel) {
+      if(rel.indexOf(forms[i].rel)!==-1) {
         rtn = forms[i];
         break;
       }
@@ -327,7 +327,7 @@ function halForms() {
   var forms = [];
 
   forms.push({
-    rel:"http://localhost:8181/files/todo.html#create-form",
+    rel:"/files/hal-todo.html#create-form",
     method:"post",
     properties: [
       {name:"title",required:true, value:"", prompt:"Title", regex:""},
@@ -336,7 +336,7 @@ function halForms() {
   });
 
   forms.push({
-    rel:"http://localhost:8181/files/todo.html#edit",
+    rel:"/files/hal-todo.html#edit",
     method:"post",
     properties: [
       {name:"id",required:true, value:"{id}", prompt:"ID", readOnly:true},
@@ -346,7 +346,7 @@ function halForms() {
   });
 
   forms.push({
-    rel:"http://localhost:8181/files/todo.html#remove",
+    rel:"/files/hal-todo.html#remove",
     method:"delete",
     properties: [
       {name:"id",required:true, value:"{id}", prompt:"ID", readOnly:true}
@@ -354,7 +354,7 @@ function halForms() {
   });
 
   forms.push({
-    rel:"http://localhost:8181/files/todo.html#active",
+    rel:"/files/hal-todo.html#active",
     method:"get",
     properties: [
       {name:"completed",value:"false", prompt:"Completed", readOnly:true}
@@ -362,7 +362,7 @@ function halForms() {
   });
 
   forms.push({
-    rel:"http://localhost:8181/files/todo.html#completed",
+    rel:"/files/hal-todo.html#completed",
     method:"get",
     properties: [
       {name:"completed",value:"true", prompt:"Completed",readOnly:true}
