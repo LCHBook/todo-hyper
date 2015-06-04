@@ -25,6 +25,7 @@ var port = (process.env.PORT || 8181);
 var prodType = 'application/json';
 var testType = 'application/vnd.collection+json';
 var haljsonType = 'application/vnd.hal+json';
+var repjsonType = 'application/representor+json';
 var htmlType = "text/html";
 var csType = '';
 var csAccept = '';
@@ -52,7 +53,8 @@ function handler(req, res) {
   else {
     csType = csAccept.split(',')[0];
   }
-  csType = haljsonType; //<-- uncomment to force Cj responses
+  // TK: this forces the request type
+  csType = repjsonType; 
   
   // parse incoming request URL
   parts = [];

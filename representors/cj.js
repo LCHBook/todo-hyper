@@ -22,7 +22,7 @@ function cj(object, root) {
     rtn.collection.links = getLinks(object[o].actions);
     rtn.collection.items = getItems(object[o].data);
     rtn.collection.queries = getQueries(object[o].actions);
-    rtn.collection.template = getTemplate(object[o].actions)
+    rtn.collection.template = getTemplate(object[o].actions);
   
     if(object.error) {
       rtn.collection.error = getError(object.error);
@@ -67,14 +67,11 @@ function getItems(obj) {
       item = {};
       item.rel = temp.meta.rel.join(" ");
       item.href = temp.meta.href.replace(/^\/\//,"http://")||"";
+      
       data = [];
       for(var d in temp) {
         if(d!=="meta") {
-          data.push({
-            name: d,
-            value: temp[d],
-            prompt: d
-          });
+          data.push({name : d, value : temp[d], prompt : d});
         }
       }
       item.data = data;

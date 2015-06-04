@@ -9,6 +9,8 @@
 // handles HTTP resource operations (per resource)
 
 var root = '';
+
+//these are the fields associated w/ this resource
 var props =  ["id","title","completeFlag"];
 
 var qs = require('querystring');
@@ -158,7 +160,7 @@ function sendList(req, res, respond, filter) {
   // build up transitions
   coll = [];
 
-  tran = transitions("self");
+  tran = transitions("selfLink");
   tran.href = root +"/"; 
   tran.rel = ["self"];
   coll.splice(coll.length, 0, tran);
@@ -216,7 +218,7 @@ function sendItem(req, res, id, respond) {
     // build up transitions
     coll = [];
 
-    tran = transitions("self");
+    tran = transitions("selfLink");
     tran.href = root +"/" + id;
     tran.rel = ["self"];
     coll.splice(coll.length, 0, tran);

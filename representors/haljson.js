@@ -40,8 +40,7 @@ function haljson(object, root, relRoot) {
   root = root.replace(/^\/\//,"http://");
   
   for(var o in object) {
-    o = o.toLowerCase();
-    rels = relRoot||root+"/files/"+o+".html#{rel}";
+    rels = relRoot||root+"/files/"+o.toLowerCase()+".html#{rel}";
     hal._links = getLinks(object[o], root, o, rels);
     if(object[o].data && object[o].data.length===1) {
       hal = getProperties(hal, object[o]);
@@ -82,7 +81,7 @@ function getLinks(object, root, o, relRoot) {
 }
 
 // emit root properties
-function getProperties(hal, object) { 
+function getProperties(hal, object) {
   var props;
   
   if(object.data && object.data[0]) {
@@ -99,7 +98,7 @@ function getProperties(hal, object) {
 
 // the shared link builder
 function getLink(links, link, relRoot) {
-  var rel, url, name, tmpl, inputs, i, x;
+  var rel, url, prompt, tmpl, inputs, i, x;
 
   rel = link.rel[0]||"related";
   url = link.href.replace(/^\/\//,"http://")||"";
@@ -120,9 +119,10 @@ function getLink(links, link, relRoot) {
   return links;
 }
 
-// dectermine naked-rel or RFC5988
+// determine naked-rel or RFC5988
 function checkRel(rel, relRoot) {
   var clearRel = "self related";
+  rel = rel.toLowerCase();
   return (clearRel.indexOf(rel)!==-1?rel:relRoot.replace("{rel}",rel));
 }
 
