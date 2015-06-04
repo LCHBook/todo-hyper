@@ -18,7 +18,7 @@ xref:plain-json[JSON Media Type]. All client read requests (e.g. GET) that rely 
 == Supported Operations and Link Relation Values
 Below is the list of link relation values and the operations they perform. Note that some Link Relation Values are link:https://tools.ietf.org/html/rfc5988#section-4.2[RFC5988]-compliant URIs. At runtime, these values will contain a complete URI that SHOULD point to a section within this documentation.
 
-[[rel-self]]
+[[self]]
 === Reload the Current Representation
 Link Rel Value::
   +self+
@@ -37,7 +37,7 @@ Notes::
 Example Request::
   +GET / HTTP/1.1+
    
-[[rel-collection]]
+[[collection]]
 === Get a List of ToDo Records
 Link Rel Value::
   +/files/hal-todo.html#collection+
@@ -56,7 +56,7 @@ Notes::
 Example Request::
   +GET / HTTP/1.1+
 
-[[rel-active]]
+[[active]]
 === Get a List of Active ToDo Records
 Link Rel Value::
   +/files/hal-todo.html#active+
@@ -75,7 +75,7 @@ Notes::
 Example Request::
   +GET /?completed=false HTTP/1.1+
 
-[[rel-completed]]
+[[completed]]
 === Get a List of Completed ToDo Records
 Link Rel Value::
   +/files/hal-todo.html#completed+
@@ -94,7 +94,7 @@ Notes::
 Example Request::
   +GET /?completed=true HTTP/1.1+
 
-[[rel-create-form]]
+[[create-form]]
 === Create a New ToDo Record
 Link Rel Value::
   +/files/hal-todo.html#create-form+
@@ -115,7 +115,7 @@ Example Request::
   
   {"title":"this is a test", "completed":"false"}
   
-[[rel-todo]]
+[[todo]]
 === Retrieve an Existing ToDo Record
 Link Rel Value::
   +/files/hal-todo.html#todo+
@@ -134,7 +134,7 @@ Notes::
 Example Request::
   +GET /123 HTTP/1.1+
   
-[[rel-edit]]
+[[edit]]
 === Edit an Existing ToDo Record
 Link Rel Value::
   +/files/hal-todo.html#edit+
@@ -155,7 +155,7 @@ Example Request::
   
   {"title":"this is a new test", "completed":"false"}
 
-[[rel-remove]]
+[[remove]]
 === Remove an Existing ToDo Record
 Link Rel Value::
   +/files/hal-todo.html#remove+

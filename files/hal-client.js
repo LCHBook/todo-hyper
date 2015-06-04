@@ -212,7 +212,7 @@ function hal() {
     return false;    
   }
 
-  // handle HAL forms 
+  // handle parameterized requests 
   function halSubmit(e) {
     return false;
   }
