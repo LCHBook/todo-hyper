@@ -242,6 +242,11 @@ function sendItem(req, res, id, respond) {
     tran.href = root + "/" + id;
     tran.rel = ["edit"];
     coll.splice(coll.length, 0, tran);
+
+    tran = transitions("removeForm");
+    tran.href = root + "/" + id;
+    tran.rel = ["remove"];
+    coll.splice(coll.length, 0, tran);
     
     tran = transitions("addForm");
     tran.href = root +"/";

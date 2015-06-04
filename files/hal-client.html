@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <!-- 
+  test HAL-JSON client 
+  HTML5 scaffolding
+  hal-client.html 
+  @mamund
+  -->
+  <head>
+    <title>HAL</title>
+    <link href="hal-client.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1 id="title"></h1>
+    <div id="links"></div>
+    <div id="form"></div>
+    <div id="properties"></div>
+    <div>
+      <pre id="dump"></pre>
+    </div>
+  </body>
+  <script src="hal-client.js">//na </script>
+  <script>
+    window.onload = function() {
+      var pg = hal();
+      pg.init("http://localhost:8181/", "ToDo");
+    }
+  </script>
+</html>

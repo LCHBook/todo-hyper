@@ -20,6 +20,7 @@
   ISSUES:
   - no support for:
     - CURIES
+    - templated links
     - _embedded
     - _links.hreflang
     - _links.type
@@ -105,6 +106,8 @@ function getLink(links, link, relRoot) {
   prompt = link.prompt||rel;
   
   tmpl = false;
+  /*
+  NOTE: templates turned off ATM
   if(link.inputs && link.type==="safe") {
     tmpl = true;
     inputs = link.inputs;
@@ -114,6 +117,7 @@ function getLink(links, link, relRoot) {
       url += (i===x-1?'}':'');
     }
   }
+  */
   links[checkRel(rel, relRoot)] = {href:url, title:prompt, templated:tmpl};
   
   return links;

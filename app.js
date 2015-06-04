@@ -22,8 +22,8 @@ var utils = require('./connectors/utils.js');
 // shared vars
 var root = '';
 var port = (process.env.PORT || 8181);
-var prodType = 'application/json';
-var testType = 'application/vnd.collection+json';
+var jsonType = 'application/json';
+var cjType = 'application/vnd.collection+json';
 var haljsonType = 'application/vnd.hal+json';
 var repjsonType = 'application/representor+json';
 var htmlType = "text/html";
@@ -40,21 +40,21 @@ function handler(req, res) {
 
   // set local vars
   root = '//'+req.headers.host;
-  csType = testType;
+  csType = cjType;
   flg = false;
   file = false;
   doc = null;
 
   // rudimentary accept-header handling
   csAccept = req.headers["accept"];
-  if(!csAccept || csAccept.indexOf(testType)!==-1) {
-    csType = testType;
+  if(!csAccept || csAccept.indexOf(cjType)!==-1) {
+    csType = cjType;
   }
   else {
     csType = csAccept.split(',')[0];
   }
   // TK: this forces the request type
-  csType = repjsonType; 
+  csType = haljsonType; 
   
   // parse incoming request URL
   parts = [];

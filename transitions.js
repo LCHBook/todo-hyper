@@ -100,14 +100,14 @@ function fillTrans() {
   });
   
   trans.push({
-    name : "todoEditLink",
+    name : "editLink",
     type : "safe",
     kind : "todo",
     target : "item",
     prompt : "Edit ToDo"
   });
   trans.push({
-    name : "todoAddForm",
+    name : "editForm",
     type : "unsafe",
     kind : "todo",
     prompt : "Edit ToDo",
