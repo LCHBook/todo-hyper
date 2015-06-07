@@ -19,15 +19,15 @@
 
   ISSUES:
   - no support for:
-    - CURIES
     - templated links
     - _embedded
+    - _links.curies
     - _links.hreflang
     - _links.type
     - _links.name
     - _links.deprecation
     - _links.profile
-  - uses '/files/{object}.html#{rel}' as relRoot fallback
+  - uses '/files/hal-{object}.html#{rel}' as relRoot fallback
 */
 
 module.exports = haljson;
@@ -114,7 +114,7 @@ function getLink(links, link, relRoot) {
     for(i=0, x=inputs.length; i<x; i++) {
       url += (i===0 ? '{?' : ',');
       url += inputs[i].name;
-      url += (i===x-1?'}':'');
+      url += (i===x-1 ? '}' : '');
     }
   }
   */

@@ -6,6 +6,8 @@
  * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
+// reference: Format for Abstract Representations (FAR)
+
 // internal JSON representor
 module.exports = repjson;
 
