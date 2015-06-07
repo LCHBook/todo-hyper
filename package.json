@@ -1,7 +1,7 @@
 {
-  "name": "todomvc",
+  "name": "todo-hyper",
   "version": "1.0.0",
-  "description": "Sample Cj Server and Fully-compliant Cj Client",
+  "description": "Simple ToDo Server with associated hypermedia clients",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
@@ -12,11 +12,15 @@
   "dependencies" : { },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LCHBook/simple-todo.git"
+    "url": "https://github.com/LCHBook/todo-hyper.git"
   },
   "keywords": [
     "hypermedia",
-    "amundsen"
+    "amundsen",
+    "HAL",
+    "Cj",
+    "Siren",
+    "UBER"
   ],
   "license": "MIT"
 }
