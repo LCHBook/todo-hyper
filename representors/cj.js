@@ -20,7 +20,7 @@ function cj(object, root) {
   for(var o in object) {
     rtn.collection.title = getTitle(object[o]);
     rtn.collection.links = getLinks(object[o].actions);
-    rtn.collection.items = getItems(object[o].data);
+    rtn.collection.items = getItems(object[o], root);
     rtn.collection.queries = getQueries(object[o].actions);
     rtn.collection.template = getTemplate(object[o].actions);
   
@@ -36,18 +36,20 @@ function getTitle(obj) {
   return obj.title||"Cj Browser";
 }
 
-function getLinks(obj, root) {
-  var link, rtn, i, x;
+function getLinks(obj, root, target, id) {
+  var link, rtn, tgt, i, x, idx;
 
   rtn = [];
+  idx = id||"";
+  tgt = target||"list";
   if(Array.isArray(obj)!==false) {
     for(i=0,x=obj.length;i<x;i++) {
       link = obj[i];
-      if(link.type==="safe" && link.target==="list") {
+      if(link.type==="safe" && link.target===tgt) {
         if(!link.inputs) {
           rtn.push({
             rel: link.rel.join(" ")||"",
-            href: link.href.replace(/^\/\//,"http://")||"",
+            href: link.href.replace(/^\/\//,"http://").replace(/{id}/,idx)||"",
             prompt: link.prompt||""
           });
         }
@@ -57,13 +59,14 @@ function getLinks(obj, root) {
   return rtn;
 }
 
-function getItems(obj) {
-  var temp, item, data, rtn, i, x, j, y;
+function getItems(obj, root) {
+  var coll, temp, item, data, links, rtn, i, x, j, y;
   
   rtn = [];
-  if(Array.isArray(obj)!==false) {
-    for(i=0,x=obj.length;i<x;i++) {
-      temp = obj[i];
+  coll = obj.data;
+  if(coll && Array.isArray(coll)!==false) {
+    for(i=0,x=coll.length;i<x;i++) {
+      temp = coll[i];
       item = {};
       item.rel = temp.meta.rel.join(" ");
       item.href = temp.meta.href.replace(/^\/\//,"http://")||"";
@@ -75,6 +78,13 @@ function getItems(obj) {
         }
       }
       item.data = data;
+      
+      // add any item-level links
+      links = getLinks(obj.actions, root, "item", coll[i].id);
+      if(Array.isArray(links) && links.length!==0) {
+        item.links = links;
+      }
+      
       rtn.push(item);
     }
   }

@@ -38,7 +38,7 @@ function fillTrans() {
     name : "selfLink",
     type : "safe",
     kind : "self",
-    target : "item",
+    target : "self",
     prompt : "Reload"
   });
     
