@@ -1,5 +1,4 @@
 /*******************************************************
- * todo-mvc implementation
  * hal-json HTML/SPA client engine
  * May 2015
  * Mike Amundsen (@mamund)
@@ -7,13 +6,22 @@
  *******************************************************/
 
 /* NOTE:
-  - has fatal dependency on:
-    - uritemplate.js
-    - dom-help.js
   - no support for:
   - _links.curies
   - _embedded
+  - relies on a customer halForms() implementation
+  
+  - has fatal dependency on:
+    - uritemplate.js
+    - dom-help.js
+  - uses no other external libs/frameworks
+  
+  - built/tested for chrome browser (YMMV on other browsers)
+  - designed to act as a "validator" for a human-driven Cj client.
+  - not production robust (missing error-handling, perf-tweaking, etc.)
+  - report issues to https://github.com/lchbook/
 */
+
 function hal() {
 
   var forms = halForms();
