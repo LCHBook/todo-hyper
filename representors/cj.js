@@ -6,6 +6,8 @@
  * Soundtrack : Complete Collection : B.B. King (2008)
  *******************************************************/
 
+var urit = require('uritemplate');
+
 // json representor
 module.exports = cj;
 
@@ -20,7 +22,7 @@ function cj(object, root) {
   for(var o in object) {
     rtn.collection.title = getTitle(object[o]);
     rtn.collection.links = getLinks(object[o].actions);
-    rtn.collection.items = getItems(object[o], root);
+    rtn.collection.items = getItems(object[o],root);
     rtn.collection.queries = getQueries(object[o].actions);
     rtn.collection.template = getTemplate(object[o].actions);
   
@@ -36,20 +38,23 @@ function getTitle(obj) {
   return obj.title||"Cj Browser";
 }
 
-function getLinks(obj, root, target, id) {
-  var link, rtn, tgt, i, x, idx;
+function getLinks(obj, root, target, tvars) {
+  var link, rtn, tgt, i, x, tmpl, url;
 
+  console.log(tvars);
+  
   rtn = [];
-  idx = id||"";
   tgt = target||"list";
   if(Array.isArray(obj)!==false) {
     for(i=0,x=obj.length;i<x;i++) {
       link = obj[i];
       if(link.type==="safe" && link.target===tgt) {
         if(!link.inputs) {
+          tpl = urit.parse(link.href);
+          url = tpl.expand(tvars);
           rtn.push({
+            href: url.replace(/^\/\//,"http://"),
             rel: link.rel.join(" ")||"",
-            href: link.href.replace(/^\/\//,"http://").replace(/{id}/,idx)||"",
             prompt: link.prompt||""
           });
         }
@@ -62,6 +67,7 @@ function getLinks(obj, root, target, id) {
 function getItems(obj, root) {
   var coll, temp, item, data, links, rtn, i, x, j, y;
   
+  tvars = {};
   rtn = [];
   coll = obj.data;
   if(coll && Array.isArray(coll)!==false) {
@@ -71,16 +77,18 @@ function getItems(obj, root) {
       item.rel = temp.meta.rel.join(" ");
       item.href = temp.meta.href.replace(/^\/\//,"http://")||"";
       
+      tvars = {}
       data = [];
       for(var d in temp) {
         if(d!=="meta") {
           data.push({name : d, value : temp[d], prompt : d});
+          tvars[d] = temp[d];
         }
       }
       item.data = data;
       
       // add any item-level links
-      links = getLinks(obj.actions, root, "item", coll[i].id);
+      links = getLinks(obj.actions, root, "item", tvars);
       if(Array.isArray(links) && links.length!==0) {
         item.links = links;
       }
