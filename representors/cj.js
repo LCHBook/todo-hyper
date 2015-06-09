@@ -41,8 +41,6 @@ function getTitle(obj) {
 function getLinks(obj, root, target, tvars) {
   var link, rtn, tgt, i, x, tmpl, url;
 
-  console.log(tvars);
-  
   rtn = [];
   tgt = target||"list";
   if(Array.isArray(obj)!==false) {

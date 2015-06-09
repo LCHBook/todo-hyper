@@ -19,7 +19,6 @@
 
   ISSUES:
   - no support for:
-    - templated links
     - _embedded
     - _links.curies
     - _links.hreflang
@@ -115,7 +114,7 @@ function getLink(links, link, relRoot) {
       url += (i===x-1 ? '}' : '');
     }
   }
-  links[checkRel(rel, relRoot)] = {href:url, title:prompt, templated:tmpl};
+  links[checkRel(rel, relRoot)] = {href:url, title:prompt, templated:tmpl, name:rel};
   
   return links;
 }

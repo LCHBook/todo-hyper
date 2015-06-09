@@ -1,11 +1,18 @@
-/*
-  sample HAL-JSON client 
-  stand-alone client code
-  hal-client.js 
-  @mamund
-  
-*/
+/*******************************************************
+ * todo-mvc implementation
+ * hal-json HTML/SPA client engine
+ * May 2015
+ * Mike Amundsen (@mamund)
+ * Soundtrack : Red Clay : Freddie Hubbard
+ *******************************************************/
 
+/* NOTE:
+  - has fatal dependency on fxa/uritemplate
+    https://github.com/fxa/uritemplate-js
+  - no support for:
+  - _links.curies
+  - _embedded
+*/
 function hal() {
 
   var forms = halForms();
@@ -41,18 +48,21 @@ function hal() {
   }
 
   // handle title for page
+  // HAL offers no title so we use our own
   function title() {
     var elm = d.find("title");
     elm.innerText = g.title;
   }
   
   // handle response dump
+  // just for debugging help
   function dump() {
     var elm = d.find("dump");
     elm.innerText = JSON.stringify(g.hal, null, 2);
   }
     
-  // handle link object
+  // _link
+  // the real stuff starts here
   function links() {
     var elm, coll;
     var ul, li, a, sel, opt;
@@ -64,6 +74,7 @@ function hal() {
       ul = d.node("ul");
       
       for(var link in coll) {
+        // render link collections as HTML select
         if(Array.isArray(coll[link])===true) {
           sel = d.node("select");          
           sel.onclick = halSelect;
@@ -75,8 +86,11 @@ function hal() {
               text:(coll[link][ary].title||coll[link][ary].href),
               value:coll[link][ary].href
             });
-            opt.setAttribute("href",coll[link][ary].href);
+            // add custom attributes
             opt.setAttribute("rel",link);
+            opt.setAttribute("href",coll[link][ary].href);
+            opt.setAttribute("templated",coll[link][ary].templated||"false");
+            opt = halAttributes(opt, coll[link][ary]);
             d.push(opt, sel);
           }
 
@@ -91,7 +105,10 @@ function hal() {
             title:(coll[link].title||coll[link].href),
             text:(coll[link].title||coll[link].href)
           });
-
+          // add custom attributes
+          a.setAttribute("templated", coll[link].templated||"false");
+          a = halAttributes(a,coll[link]);
+          
           li = d.node("li");
           li.onclick = halLink;
           d.push(a, li);
@@ -103,6 +120,7 @@ function hal() {
   }
 
   // properties
+  // emit any root-level properties
   function properties() {
     var elm, coll;
     var dl, dt, dd;
@@ -124,7 +142,9 @@ function hal() {
   }  
 
   // show form for input
-  function showForm(f, href, title) {
+  // this is a custom experience
+  // see the halForms() lib for inputs
+  function halShowForm(f, href, title) {
     var elm, coll, val;
     var form, lg, fs, p, inp;
      
@@ -134,6 +154,7 @@ function hal() {
     form = d.node("form");
     form.action = href;
     form.method = f.method;
+    form.setAttribute("halmethod", f.method);
     form.className = f.rel;
     form.onsubmit = halSubmit;
     fs = d.node("fieldset");
@@ -161,8 +182,14 @@ function hal() {
     inp = d.node("input");
     inp.type = "submit";
     d.push(inp,p);
-    d.push(p,fs);
-    
+
+    inp = d.node("input");
+    inp.type = "button";
+    inp.value = "Cancel";
+    inp.onclick = function(){elm = d.find("form");d.clear(elm);}
+    d.push(inp,p);
+
+    d.push(p,fs);            
     d.push(fs,form);
     d.push(form, elm);
   }  
@@ -171,6 +198,20 @@ function hal() {
   // hal helpers
   // ***************************
 
+  // handle hal-specific attributes
+  function halAttributes(elm,link) {
+    var coll;
+    
+    coll = ["deprecation","type","name","profile","hreflang"]
+    
+    for(var attr of coll) {
+      if(link[attr] && link[attr]!=="") {
+        elm.setAttribute(attr,link[attr]);
+      }
+    }
+    return elm;  
+  }
+  
   // clear out the page
   function halClear() {
     var elm;
@@ -187,106 +228,78 @@ function hal() {
 
   // handle GET for select
   function halSelect(e) {
-    var elm, href;
+    var elm, href, accept;
 
     elm = e.target;
     href = elm.options[elm.selectedIndex].value;
+    accept = elm.options[elm.selectedIndex].getAttribute("type"); 
     if(href && href!=="") {
-      req(href, "get", null);
+      req(href, "get", null, null, accept||g.ctype);
     }
     return false;
   }
 
-  // handle GET for lnks
+  // handle GET for links
   function halLink(e) {
-    var elm, form, href;
+    var elm, form, href, accept;
 
     elm = e.target;
+    accept = elm.getAttribute("type"); 
+
     form = forms.lookUp(elm.rel);
     if(form && form!==null) {
-      showForm(form, elm.href, elm.title);
+      halShowForm(form, elm.href, elm.title);
     }
     else {
-      req(elm.href, "get", null);
+      req(elm.href, "get", null, null, accept||g.ctype);
     }
     return false;    
   }
 
-  // handle parameterized requests 
+  // handle parameterized requests
+  // all forms submits are processed here
   function halSubmit(e) {
+    var form, query, nodes, i, x, args, url, method, template, accept;
+    
+    args = {};
+    form = e.target;
+    query = form.action.replace(/%7B/,'{'); // hack
+    template = UriTemplate.parse(query);
+    method = form.getAttribute("halmethod")||form.method;
+    accept = form.getAttribute("type")||g.ctype;
+    // gather inputs
+    nodes = d.tags("input", form);
+    for(i=0, x=nodes.length;i<x;i++) {
+      if(nodes[i].name && nodes[i].name!=='') {
+        args[nodes[i].name] = nodes[i].value;
+      }
+    }
+
+    // resolve any URITemplates
+    url = template.expand(args);
+
+    // force app/json for bodies    
+    if(method!=="get" && method!=="delete") {
+      req(url, method, JSON.stringify(args), "application/json", accept);
+    }
+    else {
+      req(url, method ,null, null, accept);
+    }
     return false;
   }
   
   // ********************************
   // ajax helpers
-  // ********************************
-  
-  // mid-level HTTP handlers
-  function httpGet(e) {
-    req(e.target.href, "get", null);
-    return false;
-  }
-  function httpQuery(e) {
-    var form, coll, query, i, x, q;
-
-    q=0;
-    form = e.target;
-    query = form.action+"/?";
-    nodes = d.tags("input", form);
-    for(i=0, x=nodes.length;i<x;i++) {
-      if(nodes[i].name && nodes[i].name!=='') {
-        if(q++!==0) {
-          query += "&";
-        }
-        query += nodes[i].name+"="+escape(nodes[i].value);
-      }
-    }
-    req(query,"get",null);
-    return false;
-  }
-  function httpPost(e) {
-    var form, nodes, data;
-
-    data = [];
-    form = e.target;
-    nodes = d.tags("input",form);
-    for(i=0,x=nodes.length;i<x;i++) {
-      if(nodes[i].name && nodes[i].name!=='') {
-        data.push({name:nodes[i].name,value:nodes[i].value+""});
-      }
-    }
-    req(form.action,'post',JSON.stringify({template:{data:data}}));
-    return false;
-  }
-  function httpPut(e) {
-    var form, nodes, data;
-
-    data = [];
-    form = e.target;
-    nodes = d.tags("input",form);
-    for(i=0,x=nodes.length;i<x;i++) {
-      if(nodes[i].name && nodes[i].name!=='') {
-        data.push({name:nodes[i].name,value:nodes[i].value+""});
-      }
-    }
-    req(form.action,'put',JSON.stringify({template:{data:data}}));
-    return false;
-  }
-  function httpDelete(e) {
-    if(confirm("Ready to delete?")===true) {
-      req(e.target.href, "delete", null);
-    }
-    return false;
-  }
+  // ********************************  
   
   // low-level HTTP stuff
-  function req(url, method, body) {
+  function req(url, method, body, content, accept) {
     var ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function(){rsp(ajax)};
     ajax.open(method, url);
-    ajax.setRequestHeader("accept",g.ctype);
+    ajax.setRequestHeader("accept",accept||g.ctype);
     if(body && body!==null) {
-      ajax.setRequestHeader("content-type", g.ctype);
+      ajax.setRequestHeader("content-type", content||g.ctype);
     }
     ajax.send(body);
   }
@@ -304,10 +317,20 @@ function hal() {
   return that;
 }
 
-// **************************
-// FORMS for HAL-JSON
-// find request form via rel
-// **************************
+/***************************
+ FORMS for HAL-JSON
+ 
+ This is a custom implementation to support human input forms for HAL
+ - define a form (rel, method, arguments)
+ - set rel == hal._link.rel
+ - halForms.loolkup(re) : use rel as a lookup at runtime to get form definition
+ - display form (see halShowForm) and handle submission
+
+ NOTE:
+ optionally, halForms.lookup(rel) could call an external service 
+ using the rel as a URL that returns the JSON definition
+ 
+ **************************/
 function halForms() {
 
   // return form
@@ -323,9 +346,8 @@ function halForms() {
     return rtn;
   }  
 
-  // run this once
+  // load forms once
   var forms = [];
-
   forms.push({
     rel:"/files/hal-todo.html#create-form",
     method:"post",
@@ -337,7 +359,7 @@ function halForms() {
 
   forms.push({
     rel:"/files/hal-todo.html#edit",
-    method:"post",
+    method:"put",
     properties: [
       {name:"id",required:true, value:"{id}", prompt:"ID", readOnly:true},
       {name:"title",required:true, value:"{title}", prompt:"Title", regex:""},
@@ -364,6 +386,14 @@ function halForms() {
   forms.push({
     rel:"/files/hal-todo.html#completed",
     method:"get",
+    properties: [
+      {name:"completed",value:"true", prompt:"Completed",readOnly:true}
+    ]
+  });
+
+  forms.push({
+    rel:"/files/hal-todo.html#mark-completed",
+    method:"post",
     properties: [
       {name:"completed",value:"true", prompt:"Completed",readOnly:true}
     ]

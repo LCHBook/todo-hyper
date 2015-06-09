@@ -54,7 +54,7 @@ function handler(req, res) {
     csType = csAccept.split(',')[0];
   }
   // TK: this forces the request type
-  csType = cjType; 
+  csType = haljsonType; 
   
   // parse incoming request URL
   parts = [];

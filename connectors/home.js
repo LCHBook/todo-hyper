@@ -187,7 +187,7 @@ function sendList(req, res, respond, filter) {
 
   tran = transitions("completedLink");
   tran.href = root + "/completed/{id}";
-  tran.rel = ["item completed"];
+  tran.rel = ["mark-completed","item"];
   coll.splice(coll.length, 0, tran);
   
   // compose graph 
