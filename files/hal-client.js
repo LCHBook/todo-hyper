@@ -390,14 +390,6 @@ function halForms() {
       {name:"completed",value:"true", prompt:"Completed",readOnly:true}
     ]
   });
-
-  forms.push({
-    rel:"/files/hal-todo.html#mark-completed",
-    method:"post",
-    properties: [
-      {name:"completed",value:"true", prompt:"Completed",readOnly:true}
-    ]
-  });
     
   var that = {};
   that.lookUp = lookUp;

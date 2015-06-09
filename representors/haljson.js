@@ -114,7 +114,7 @@ function getLink(links, link, relRoot) {
       url += (i===x-1 ? '}' : '');
     }
   }
-  links[checkRel(rel, relRoot)] = {href:url, title:prompt, templated:tmpl, name:rel};
+  links[checkRel(rel, relRoot)] = {href:url, title:prompt, templated:tmpl};
   
   return links;
 }

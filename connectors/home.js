@@ -184,11 +184,6 @@ function sendList(req, res, respond, filter) {
   tran.href = root + "/";
   tran.rel = ["create-form"];
   coll.splice(coll.length, 0, tran);
-
-  tran = transitions("completedLink");
-  tran.href = root + "/completed/{id}";
-  tran.rel = ["mark-completed","item"];
-  coll.splice(coll.length, 0, tran);
   
   // compose graph 
   doc = {};
