@@ -137,19 +137,18 @@ function hal() {
     elm = d.find("properties");
     d.clear(elm);
     dl = d.node("dl");
+    
+    dd = d.node("dd");
     for(var prop in g.hal) {
-      if(prop!=="_links" && prop!=="_embedded") {
-        dt = d.node("dt");
-        dt.innerText = prop;
-        dd = d.node("dd");
-        dd.innerText = g.hal[prop]; 
-        d.push(dt,dl);
-        d.push(dd,dl);
+      if(prop!=="_links" && prop!=="_embedded") {      
+        p = d.data({className:"property "+prop,text:prop+"&nbsp;",value:g.hal[prop]+"&nbsp;"});
+        d.push(p,dd);
       }
+      d.push(dd,dl);
     }
     d.push(dl,elm);
   }  
-
+  
   // show form for input
   // this is a custom experience
   // see the halForms() lib for inputs
