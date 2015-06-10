@@ -19,7 +19,6 @@
 
   ISSUES:
   - no support for:
-    - _embedded
     - _links.curies
     - _links.hreflang
     - _links.type
@@ -44,6 +43,9 @@ function haljson(object, root, relRoot) {
     hal._links = getLinks(object[o], root, o, rels);
     if(object[o].data && object[o].data.length===1) {
       hal = getProperties(hal, object[o]);
+    }
+    else {
+      hal._embedded = getEmbedded(object[o], root, o, rels);
     }
   }
        
@@ -75,6 +77,32 @@ function getLinks(object, root, o, relRoot) {
       }
       links[checkRel(o, relRoot)] = items;
     }
+  }
+  
+  return links;
+}
+
+// emit embedded content
+function getEmbedded(object, root, o, relRoot) {
+  var coll, items, links, i, x;
+  
+  links = {};
+  
+  // list-level objects
+  if(object.data) {
+    coll = object.data;
+    items = [];
+    for(i=0,x=coll.length;i<x;i++) {
+      item = {};
+      item.href = coll[i].meta.href.replace(/^\/\//,"http://")||"";
+      for(var p in coll[i]) {
+        if(p!=='meta') {
+          item[p] = coll[i][p];
+        }
+      }
+      items.push(item);
+    }
+    links[checkRel(o, relRoot)] = items;
   }
   
   return links;

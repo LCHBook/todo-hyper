@@ -8,7 +8,6 @@
 /* NOTE:
   - no support for:
   - _links.curies
-  - _embedded
   - relies on a customer halForms() implementation
   
   - has fatal dependency on:
@@ -53,6 +52,7 @@ function hal() {
     title();
     dump();
     links();
+    embedded();
     properties();
   }
 
@@ -70,7 +70,7 @@ function hal() {
     elm.innerText = JSON.stringify(g.hal, null, 2);
   }
     
-  // _link
+  // _links
   // the real stuff starts here
   function links() {
     var elm, coll;
@@ -128,6 +128,61 @@ function hal() {
     }
   }
 
+  // _embedded
+  // handle any embedded content
+  function embedded() {
+    var elm, embeds;
+    var ul, li, dl, dt, dd;
+    
+    elm = d.find("embedded");
+    d.clear(elm);
+    
+    if(g.hal._embedded) {
+      ul = d.node("ul");
+      
+      // get all the rel/sets for this response
+      embeds = g.hal._embedded;
+      for(var coll in embeds) {
+        li = d.node("li");
+        dl = d.node("dl");
+        p = d.para({text:coll, className:"embedded group"});
+        d.push(p,li);
+        
+        // get all the links for this rel/set
+        items = embeds[coll];
+        for(var itm of items) {
+          dt = d.node("dt");
+          
+          // pluck href from the properties
+          a = d.anchor({
+            rel:coll,
+            href:itm.href||'#',
+            title:itm.href||coll,
+            text:itm.href||coll
+          });
+          a.setAttribute("templated", itm.templated||"false");
+          a = halAttributes(a,itm);
+          a.onclick = halLink;
+          d.push(a,dt);
+          d.push(dt, dl);
+          
+          // emit all the properties for this item
+          dd = d.node("dd");
+          for(var prop in itm) {
+            if(prop!=="href") {
+              p = d.data({className:"property "+prop,text:prop+"&nbsp;",value:itm[prop]+"&nbsp;"});
+              d.push(p,dd);
+            }
+          }
+          d.push(dd,dl);
+        }        
+        d.push(dl, li);
+      }
+      d.push(li, ul);
+    }
+    if(ul) {d.push(ul, elm);}
+  }
+  
   // properties
   // emit any root-level properties
   function properties() {
