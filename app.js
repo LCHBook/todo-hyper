@@ -55,7 +55,7 @@ function handler(req, res) {
     csType = csAccept.split(',')[0];
   }
   // TK: this forces the request type
-  csType = sirenType; 
+  //csType = sirenType; 
   
   // parse incoming request URL
   parts = [];
