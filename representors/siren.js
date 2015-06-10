@@ -55,15 +55,18 @@ function siren(object, root) {
 
 // handle single entity
 function getEntity(siren, data, o) {
-  var props;
+  var props, properties;
   
   props = data[0];
-  siren.class = [o];
+  properties = {};
   for(var p in props) {
     if(p!=='meta') {
-      siren[p] = props[p];
+      properties[p] = props[p];
     }
   }
+  
+  siren.class = [o]
+  siren.properties = properties;
   
   return siren;
 }
