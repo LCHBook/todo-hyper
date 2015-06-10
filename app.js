@@ -26,6 +26,7 @@ var jsonType = 'application/json';
 var cjType = 'application/vnd.collection+json';
 var haljsonType = 'application/vnd.hal+json';
 var repjsonType = 'application/representor+json';
+var sirenType = 'application/vnd.siren+json';
 var htmlType = "text/html";
 var csType = '';
 var csAccept = '';
@@ -54,7 +55,7 @@ function handler(req, res) {
     csType = csAccept.split(',')[0];
   }
   // TK: this forces the request type
-  //csType = haljsonType; 
+  csType = sirenType; 
   
   // parse incoming request URL
   parts = [];

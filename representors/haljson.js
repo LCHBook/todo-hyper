@@ -15,7 +15,7 @@
     
   HACKS:
   - http: hacked into the root here
-  - assumes "title" property for link array
+  - assumes "title" property for link array <-- FIX
 
   ISSUES:
   - no support for:
