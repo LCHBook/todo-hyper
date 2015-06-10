@@ -16,7 +16,7 @@
   - uses no other external libs/frameworks
   
   - built/tested for chrome browser (YMMV on other browsers)
-  - designed to act as a "validator" for a human-driven Cj client.
+  - designed to act as a "validator" for a human-driven HAL client.
   - not production robust (missing error-handling, perf-tweaking, etc.)
   - report issues to https://github.com/lchbook/
 */
