@@ -24,7 +24,7 @@ function siren() {
   var g = {};
   
   g.url = '';
-  g.siren = null;
+  g.msg = null;
   g.ctype = "application/vnd.siren+json";
   g.title = "";
   
@@ -43,7 +43,7 @@ function siren() {
   }
 
   // primary loop
-  function parseSiren() {
+  function parseMsg() {
     sirenClear();
     title();
     dump();
@@ -64,7 +64,7 @@ function siren() {
   // just for debugging help
   function dump() {
     var elm = d.find("dump");
-    elm.innerText = JSON.stringify(g.siren, null, 2);
+    elm.innerText = JSON.stringify(g.msg, null, 2);
   }
     
   // links
@@ -74,10 +74,10 @@ function siren() {
     elm = d.find("links");
     d.clear(elm);
 
-    if(g.siren.links) {
+    if(g.msg.links) {
       ul = d.node("ul");
       ul.onclick = httpGet;      
-      coll = g.siren.links;
+      coll = g.msg.links;
       for(var link of coll) {
         li = d.node("li");
         a = d.anchor({
@@ -150,8 +150,8 @@ function siren() {
   
   function rsp(ajax) {
     if(ajax.readyState===4) {
-      g.siren = JSON.parse(ajax.responseText);
-      parseSiren();
+      g.msg = JSON.parse(ajax.responseText);
+      parseMsg();
     }
   }
 
