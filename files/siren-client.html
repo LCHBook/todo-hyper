@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <!-- 
+  /*******************************************************
+   * todo-mvc implementation 
+   * siren representor (server)
+   * June 2015
+   * Mike Amundsen (@mamund)
+   * Soundtrack : Motown Classics Gold (2005)
+   *******************************************************/
+  -->
+  <head>
+    <title>Siren</title>
+    <link href="x-siren-client.css" rel="stylesheet" />
+  </head>
+  <body>
+    <h1 id="title"></h1>
+    <div id="links"></div>
+    <div id="properties"></div>
+    <div id="entities"></div>
+    <div id="actions"></div>
+    <div>
+      <pre id="dump"></pre>
+    </div>
+  </body>
+  <script src="uritemplate.js">//na</script>  
+  <script src="dom-help.js">//na</script>  
+  <script src="siren-client.js">//na </script>
+  <script>
+    window.onload = function() {
+      var pg = siren();
+      pg.init("http://localhost:8181/", "ToDo");
+    }
+  </script>
+</html>

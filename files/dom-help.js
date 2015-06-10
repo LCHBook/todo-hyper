@@ -71,6 +71,7 @@ function domHelp() {
     a.href = args.href||"";
     a.className = args.className||"";
     a.title = args.text||"link";
+    a.type = args.type||"";
     push(text(args.text||"link"), a);
 
     return a;
