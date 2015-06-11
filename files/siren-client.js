@@ -25,7 +25,8 @@ function siren() {
   
   g.url = '';
   g.msg = null;
-  g.ctype = "application/vnd.siren+json";
+  g.ctype = "application/x-www-form-urlencoded";
+  g.atype = "application/vnd.siren+json";
   g.title = "";
   
   // init library and start
@@ -49,15 +50,20 @@ function siren() {
     dump();
     links();
     entities();
-    actions();
     properties();
+    actions();
   }
 
   // handle title for page
-  // HAL offers no title so we use our own
+  // Siren offers no title so we use our own
   function title() {
-    var elm = d.find("title");
+    var elm
+    
+    elm = d.find("title");
     elm.innerText = g.title;
+    
+    elm = d.tags("title");
+    elm[0].innerText = g.title;
   }
   
   // handle response dump
@@ -94,8 +100,49 @@ function siren() {
     }
   }
 
-  // _entities
+  // entities
   function entities() {
+    var elm, coll;
+    var ul, li, dl, dt, dd, a, p;
+    
+    elm = d.find("entities");
+    d.clear(elm);
+    
+    if(g.msg.entities) {
+      ul = d.node("ul");
+      
+      coll = g.msg.entities;
+      for(var item of coll) {
+        li = d.node("li");
+        dl = d.node("dl");
+        dt = d.node("dt");
+        
+        a = d.anchor({
+          href:item.href,
+          rel:item.rel.join(" "),
+          className:item.class.join(" "),
+          text:item.title||item.href});
+        a.onclick = httpGet;
+        d.push(a, dt);
+        d.push(dt, dl);
+
+        dd = d.node("dd");
+        for(var prop in item) {
+          if(prop!=="href" && prop!=="class" && prop!=="type" && prop!=="rel") {
+            p = d.data({
+              className:"item "+item.class.join(" "),
+              text:prop+"&nbsp;",
+              value:item[prop]+"&nbsp;"
+            });
+            d.push(p,dd);
+          }
+        }
+        d.push(dd, dl);
+        d.push(dl, li);
+        d.push(li, ul);
+      }
+      d.push(ul, elm);
+    }
   }
   
   // actions  
@@ -104,6 +151,28 @@ function siren() {
   
   // properties
   function properties() {
+    var elm, coll;
+    var dl, dt, dd, a, p;
+    
+    elm = d.find("properties");
+    d.clear(elm);
+    
+    if(g.msg.properties) {
+      ul = d.node("ul");
+      dl = d.node("dl");
+      dd = d.node("dd");
+      coll = g.msg.properties;
+      for(var prop in coll) {        
+        p = d.data({
+          className:"item "+g.msg.class.join(" ")||"",
+          text:prop+"&nbsp;",
+          value:coll[prop]+"&nbsp;"
+        });
+        d.push(p,dd);
+      }
+      d.push(dd, dl);
+      d.push(dl, elm);
+    }
   }  
 
   // ***************************
@@ -141,7 +210,7 @@ function siren() {
     var ajax = new XMLHttpRequest();
     ajax.onreadystatechange = function(){rsp(ajax)};
     ajax.open(method, url);
-    ajax.setRequestHeader("accept",accept||g.ctype);
+    ajax.setRequestHeader("accept",accept||g.atype);
     if(body && body!==null) {
       ajax.setRequestHeader("content-type", content||g.ctype);
     }
