@@ -8,7 +8,6 @@
 
 /* NOTE:  
   - has fatal dependency on:
-    - uritemplate.js
     - dom-help.js
   - uses no other external libs/frameworks
   
